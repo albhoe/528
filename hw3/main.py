@@ -16,9 +16,13 @@ def process_request(request):
         country = request.headers.get('X-country')
         if country in ['North Korea', 'Iran', 'Cuba', 'Myanmar', 'Iraq', 'Libya', 'Sudan', 'Zimbabwe', 'Syria']:
             message = f'Permission Denied because X-country header = {country}'
-            logging.error({'message':message})
             data = message.encode("utf-8")
-            publisher.publish(topic_path, data)
+            try:
+                future = publisher.publish(topic_path, data)
+                future.result(timeout=10)
+            except Exception as e:
+                logging.error(f'Publish Error:{e}')
+            logging.error({'message':message})
             return 'Permission Denied', 400
 
         name = request.args.get('file')
