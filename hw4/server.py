@@ -10,7 +10,8 @@ bucket = storage_client.bucket('alhoe528hw2')
 publisher = pubsub_v1.PublisherClient()
 topic_path = publisher.topic_path("bucsece528", "hw3topic")
 
-if __name__ == "__main__":
+@app.route('/')
+def handle_request(request):
     if request.method == "GET":
         country = request.headers.get('X-country')
         if country in ['North Korea', 'Iran', 'Cuba', 'Myanmar', 'Iraq', 'Libya', 'Sudan', 'Zimbabwe', 'Syria']:
@@ -34,3 +35,6 @@ if __name__ == "__main__":
     else:
         logging.error({'message':'Request for unimplemented function','method':request.method})
         return "Not Implemented", 501
+    
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8080, threaded=True)
