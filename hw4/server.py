@@ -10,7 +10,7 @@ bucket = storage_client.bucket('alhoe528hw2')
 publisher = pubsub_v1.PublisherClient()
 topic_path = publisher.topic_path("bucsece528", "hw3topic")
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH'])
 def handle_request():
     if request.method == "GET":
         country = request.headers.get('X-country')

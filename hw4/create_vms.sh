@@ -41,11 +41,6 @@ gcloud compute instances create hw4-webserver \
     --address=hw4-webserver-ip \
     --metadata-from-file=startup-script=server-startup.sh
 
-until gcloud compute ssh hw4-webserver --zone=$ZONE --command="test -f /root/server.log" --quiet 2>/dev/null; do
-    echo "Waiting for startup script..."
-    sleep 10
-done
-
 WEBSERVER_IP=$(gcloud compute addresses describe hw4-webserver-ip \
   --region=$REGION --format='get(address)')
 echo "Web Server IP: $WEBSERVER_IP"
