@@ -11,7 +11,7 @@ publisher = pubsub_v1.PublisherClient()
 topic_path = publisher.topic_path("bucsece528", "hw3topic")
 
 @app.route('/')
-def handle_request(request):
+def handle_request():
     if request.method == "GET":
         country = request.headers.get('X-country')
         if country in ['North Korea', 'Iran', 'Cuba', 'Myanmar', 'Iraq', 'Libya', 'Sudan', 'Zimbabwe', 'Syria']:
