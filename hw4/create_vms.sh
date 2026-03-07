@@ -21,9 +21,9 @@ gcloud compute instances create hw4-forbidden \
 
     apt-get update -y
     apt-get install -y python3-pip git
-    git clone https://github.com/albhoe/528.git /opt/hw4
-    pip3 install --break-system-packages -r /opt/hw4/requirements.txt
-    nohup python3 /opt/hw4/listener.py > /root/listener.log 2>&1 &'
+    git clone https://github.com/albhoe/528.git /opt/528
+    pip3 install --break-system-packages -r /opt/528/hw4/requirements.txt
+    nohup python3 /opt/528/hw4/listener.py > /root/listener.log 2>&1 &'
 
 sleep 10
 REPORTER_IP=$(gcloud compute instances describe hw4-forbidden \
