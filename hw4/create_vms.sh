@@ -16,11 +16,11 @@ gcloud compute instances create hw4-forbidden \
     --scopes=cloud-platform \
     --tags=hw4-forbidden \
     --metadata=startup-script='#!/bin/bash
-    apt-get update -y 
-    apt-get install -y python3-pip git
-    git clone https://github.com/albhoe/528.git /opt/hw4
-    pip3 install --break-system-packages -r /opt/hw4/requirements.txt 
-    nohup python3 /opt/hw4/listener.py > /var/log/listener.log 2>&1 &'
+    sudo apt-get update -y 
+    sudo apt-get install -y python3-pip git
+    sudo git clone https://github.com/albhoe/528.git /opt
+    sudo pip3 install --break-system-packages -r /opt/hw4/requirements.txt 
+    sudo nohup python3 /opt/hw4/listener.py > /var/log/listener.log 2>&1 &'
 
 sleep 10
 REPORTER_IP=$(gcloud compute instances describe hw4-forbidden \
@@ -35,16 +35,16 @@ gcloud compute instances create hw4-webserver \
     --service-account=$WEBSERVER_SERVICE_ACCOUNT \
     --scopes=cloud-platform \
     --tags=hw4-webserver \
+    --address=hw4-webserver-ip \
     --metadata=startup-script='#!/bin/bash
-    apt-get update -y
-    apt-get install -y python3-pip git
-    git clone https://github.com/albhoe/528.git /opt/hw4
-    pip3 install --break-system-packages -r /opt/hw4/requirements.txt
+    sudo apt-get update -y
+    sudo apt-get install -y python3-pip git
+    sudo git clone https://github.com/albhoe/528.git /opt
+    sudo pip3 install --break-system-packages -r /opt/hw4/requirements.txt
     export BUCKET_NAME='alhoe528hw2'
-    export REPORTER_URL='http://${REPORTER_IP}:8080/report'
     export PORT=8080
     
-    nohup python3 /opt/hw4/server.py > /var/log/server.log 2>&1 &'
+    sudo nohup python3 /opt/hw4/server.py > /var/log/server.log 2>&1 &'
 
 WEBSERVER_IP=$(gcloud compute addresses describe hw4-webserver-ip \
   --region=$REGION --format='get(address)')
