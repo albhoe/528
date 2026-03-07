@@ -16,6 +16,7 @@ def handle_request():
         country = request.headers.get('X-country')
         if country in ['North Korea', 'Iran', 'Cuba', 'Myanmar', 'Iraq', 'Libya', 'Sudan', 'Zimbabwe', 'Syria']:
             message = f'Permission Denied because X-country header = {country}'
+            logging.critical({'message': message})
             data = message.encode("utf-8")
             try:
                 future = publisher.publish(topic_path, data)
@@ -30,10 +31,10 @@ def handle_request():
         if blob.exists():
             return blob.download_as_text(), 200
         else:
-            logging.error({"message": "File not found", "file": name})
+            logging.warning({"message": "File not found", "file": name})
             return f"Not Found Error: {name} does not exist", 404
     else:
-        logging.error({'message':'Request for unimplemented function','method':request.method})
+        logging.warning({'message':'Request for unimplemented function','method':request.method})
         return "Not Implemented", 501
     
 if __name__ == "__main__":
