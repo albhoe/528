@@ -16,8 +16,7 @@ gcloud compute instances create hw4-forbidden \
     --scopes=cloud-platform \
     --tags=hw4-forbidden \
     --metadata-from-file=startup-script=listener-startup.sh
-
-sleep 10
+s
 REPORTER_IP=$(gcloud compute instances describe hw4-forbidden \
     --zone=$ZONE \
     --format='get(networkInterfaces[0].networkIP)')

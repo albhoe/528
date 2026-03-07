@@ -2,6 +2,10 @@ from flask import *
 from google.cloud import storage
 from google.cloud import pubsub_v1
 import logging
+import google.cloud.logging
+client = google.cloud.logging.Client()
+client.setup_logging()
+
 
 app = Flask(__name__)
 
