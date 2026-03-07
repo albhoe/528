@@ -39,9 +39,7 @@ gcloud compute instances create hw4-webserver \
     --scopes=cloud-platform \
     --tags=hw4-webserver \
     --address=hw4-webserver-ip \
-    --metadata=startup-script='#!/bin/bash
-    curl -o /tmp/startup-server.sh https://raw.githubusercontent.com/albhoe/528/main/hw4/server-startup.sh
-    bash /tmp/startup-server.sh'
+    --metadata-from-file=startup-script=server-startup.sh
     
 
 WEBSERVER_IP=$(gcloud compute addresses describe hw4-webserver-ip \
