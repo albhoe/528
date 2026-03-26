@@ -22,6 +22,19 @@ STATIC_IP=$(gcloud compute addresses describe webserver-ip \
 
 echo "Static IP allocated: $STATIC_IP"
 
+gcloud compute instances create hw4-forbidden \
+    --zone=$ZONE \
+    --machine-type=e2-micro \
+    --service-account=$FORBIDDEN_SERVICE_ACCOUNT \
+    --scopes=cloud-platform \
+    --tags=hw4-forbidden \
+    --metadata-from-file=startup-script=listener-startup.sh
+
+REPORTER_IP=$(gcloud compute instances describe hw4-forbidden \
+    --zone=$ZONE \
+    --format='get(networkInterfaces[0].networkIP)')
+echo "Forbidden VM IP: $REPORTER_IP" 
+
 #Create Web Server 
 gcloud compute instances create hw4-webserver \
     --zone=$ZONE \
@@ -29,10 +42,5 @@ gcloud compute instances create hw4-webserver \
     --service-account=$WEBSERVER_SERVICE_ACCOUNT \
     --scopes=cloud-platform \
     --tags=hw4-webserver \
-    --address=hw4-webserver-ip \
-    --address=$STATIC_IP \
-    --metadata-from-file startup-script=startup.sh \
-
-WEBSERVER_IP=$(gcloud compute addresses describe hw4-webserver-ip \
-  --region=$REGION --format='get(address)')
-echo "Web Server IP: $WEBSERVER_IP (Check that this matches the static IP allocated above)"
+    --address=webserver-ip \
+    --metadata-from-file=startup-script=startup.sh
