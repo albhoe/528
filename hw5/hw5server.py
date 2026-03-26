@@ -2,8 +2,12 @@ from flask import *
 from google.cloud import storage
 from google.cloud import pubsub_v1
 import logging
+import google.cloud.logging
 import pymysql
 import time
+
+client = google.cloud.logging.Client()
+client.setup_logging()
 
 app = Flask(__name__)
 
@@ -85,7 +89,7 @@ def send_faildata(data,error_code):
         """, log_entry)
     connection.commit()
 
-@app.route("/")
+@app.route('/', methods=['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH'])
 def process_request(request):
     if request.method == "GET":
         headers = headers(request)
@@ -114,4 +118,7 @@ def process_request(request):
     else:
         logging.error({'message':'Request for unimplemented function','method':request.method})
         send_faildata(headers,501)
-        return "Not Implemented", 501
+        return "Not Implemented", 
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8080, threaded=True)
