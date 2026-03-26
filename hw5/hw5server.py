@@ -93,7 +93,7 @@ def send_faildata(data,error_code):
         cursor.execute("""
             INSERT INTO errors
               (timestamp, time_of_day, requested_file, error_code)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s)
         """, log_entry)
     connection.commit()
 
