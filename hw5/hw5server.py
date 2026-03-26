@@ -28,7 +28,7 @@ def connect_to_db():
         database='cs528-hw5-database'
     )
 
-def headers(request):
+def get_headers(request):
     timestamp = time.strftime('%Y-%m-%d %H:%M:%S'), #USE THIS AS PRIMARY KEY
     tod = time.strftime('%H:%M:%S')
     client_ip = request.remote_addr
@@ -94,7 +94,7 @@ def send_faildata(data,error_code):
 @app.route('/', methods=['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH'])
 def process_request():
     if request.method == "GET":
-        headers = headers(request)
+        headers = get_headers(request)
         country = request.headers.get('X-country') #I could extract the header using the function, but I'm scared of breaking things.
         if country in BANNED_COUNTRIES:
             message = f'Permission Denied because X-country header = {country}'
