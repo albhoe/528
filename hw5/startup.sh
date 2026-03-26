@@ -26,6 +26,10 @@ export REQUESTS_CA_BUNDLE=$(python3 -m certifi)
 git clone https://github.com/albhoe/528.git /opt/528
 pip3 install -r /opt/528/hw5/requirements.txt
 
+sudo apt-get update && sudo apt-get install google-guest-agent
+sudo apt-get update && sudo apt-get install --reinstall ca-certificates
+sudo update-ca-certificates
+
 touch /var/log/startup_already_done [cite: 50]
 
 nohup python3 /opt/528/hw5/hw5server.py > /root/server.log 2>&1 &
