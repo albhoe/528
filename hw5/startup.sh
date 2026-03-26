@@ -7,7 +7,7 @@ if [ -f /var/log/startup_already_done ]; then
 fi
 
 apt-get update -y
-pip3 install -y python3-pip git
+apt-get install -y python3-pip git
 
 #Connect to database programmatically
 wget https://dev.mysql.com/get/Downloads/MySQL-8.4/mysql-server_8.4.8-1ubuntu20.04_amd64.deb-bundle.tar
@@ -29,7 +29,7 @@ export INSTANCE_CONNECTION_NAME= bucsece528\:us-east1\:alhoe-hw5-mysqlinstance
 
 #Load files through GitHub
 git clone https://github.com/albhoe/528.git /opt/528
-pip3 install -r /opt/528/hw5/requirements.txt
+pip3 install --break-system-packages -r /opt/528/hw5/requirements.txt
 
 touch /var/log/startup_already_done
 
