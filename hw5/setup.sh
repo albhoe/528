@@ -9,6 +9,8 @@ ZONE="us-central1-a"
 WEBSERVER_SERVICE_ACCOUNT="hw4-webserver-serviceaccount@${PROJECT_ID}.iam.gserviceaccount.com"
 FORBIDDEN_SERVICE_ACCOUNT="hw4-forbidden-serviceaccount@${PROJECT_ID}.iam.gserviceaccount.com"
 
+gcloud config set project $PROJECT_ID
+
 # Allocate the static IP
 gcloud compute addresses create webserver-ip \
     --region=$REGION \

@@ -8,14 +8,14 @@ import time
 
 PROJECT_ID = "bucsece528"
 
-client = google.cloud.logging.Client(project=PROJECT_ID)
-client.setup_logging(project=PROJECT_ID)
+client = google.cloud.logging.Client()
+client.setup_logging()
 
 app = Flask(__name__)
 
 BANNED_COUNTRIES = ['North Korea', 'Iran', 'Cuba', 'Myanmar', 'Iraq', 'Libya', 'Sudan', 'Zimbabwe', 'Syria']
 
-storage_client = storage.Client(project=PROJECT_ID)
+storage_client = storage.Client()
 bucket = storage_client.bucket('alhoe528hw2')
 publisher = pubsub_v1.PublisherClient()
 topic_path = publisher.topic_path("bucsece528", "hw3topic")
