@@ -3,8 +3,12 @@ from google.cloud import storage
 from google.cloud import pubsub_v1
 import logging
 import google.cloud.logging
-import pymysql
 import time
+import os
+from google.cloud.sql.connector import Connector, IPTypes
+import pymysql
+import socket, struct
+import sqlalchemy
 
 PROJECT_ID = "bucsece528"
 
@@ -76,8 +80,7 @@ def get_headers(request):
         'requested_file': path
     }
 
-def send_requestdata(data):
-    connection = connect_to_db()
+def send_requestdata(data,connection):
     with connection.cursor() as cursor:
         cursor.execute("""
             INSERT INTO requests
@@ -86,9 +89,8 @@ def send_requestdata(data):
         """, tuple(data.values()))
     connection.commit()
 
-def send_faildata(data,error_code):
+def send_faildata(data,error_code,connection):
     log_entry = (data['timestamp'],data['time_of_day'],data['requested_file'],error_code)
-    connection = connect_to_db()
     with connection.cursor() as cursor:
         cursor.execute("""
             INSERT INTO errors
@@ -99,6 +101,7 @@ def send_faildata(data,error_code):
 
 @app.route('/', methods=['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH'])
 def process_request():
+    connection=connect_to_db()
     get_logging_client()
     if request.method == "GET":
         headers = get_headers(request)
@@ -112,22 +115,22 @@ def process_request():
             except Exception as e:
                 logging.error(f'Publish Error:{e}')
             logging.error({'message':message})
-            send_faildata(headers,400)
+            send_faildata(headers,400,connection)
             return 'Permission Denied', 400
 
         name = request.args.get('file')
         if name:
             blob = bucket.blob(name)
             if blob.exists():
-                send_requestdata(headers)
+                send_requestdata(headers,connection)
                 return blob.download_as_text(), 200
         
         logging.error({"message": "File not found", "file": name})
-        send_faildata(headers,404)
+        send_faildata(headers,404,connection)
         return f"Not Found Error: {name} does not exist", 404
     else:
         logging.error({'message':'Request for unimplemented function','method':request.method})
-        send_faildata(headers,501)
+        send_faildata(headers,501,connection)
         return "Not Implemented", 
 
 if __name__ == "__main__":
