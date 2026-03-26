@@ -6,7 +6,7 @@ import google.cloud.logging
 import pymysql
 import time
 
-client = google.cloud.logging.Client()
+client = google.cloud.logging.Client(project="bucsece528")
 client.setup_logging()
 
 app = Flask(__name__)
