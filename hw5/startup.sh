@@ -7,7 +7,7 @@ if [ -f /var/log/startup_already_done ]; then
 fi
 
 apt-get update -y
-pip3 install --upgrade pip
+pip3 install -y python3-pip git
 
 #Connect to database programmatically
 wget https://dev.mysql.com/get/Downloads/MySQL-8.4/mysql-server_8.4.8-1ubuntu20.04_amd64.deb-bundle.tar
