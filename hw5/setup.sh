@@ -28,12 +28,7 @@ gcloud compute instances create hw4-forbidden \
     --service-account=$FORBIDDEN_SERVICE_ACCOUNT \
     --scopes=cloud-platform \
     --tags=hw4-forbidden \
-    --metadata-from-file=startup-script=listener-startup.sh
-
-REPORTER_IP=$(gcloud compute instances describe hw4-forbidden \
-    --zone=$ZONE \
-    --format='get(networkInterfaces[0].networkIP)')
-echo "Forbidden VM IP: $REPORTER_IP" 
+    --metadata-from-file startup-script=listener-startup.sh
 
 #Create Web Server 
 gcloud compute instances create hw4-webserver \
@@ -43,4 +38,4 @@ gcloud compute instances create hw4-webserver \
     --scopes=cloud-platform \
     --tags=hw4-webserver \
     --address=webserver-ip \
-    --metadata-from-file=startup-script=startup.sh
+    --metadata-from-file startup-script=startup.sh
