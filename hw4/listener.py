@@ -1,7 +1,9 @@
 from google.cloud import pubsub_v1
 from google.cloud import storage
 
-storage_client = storage.Client()
+PROJECT_ID = "bucsece528"
+
+storage_client = storage.Client(project=PROJECT_ID)
 bucket = storage_client.bucket('alhoe528hw2')
 blob = bucket.blob('/hw3/forbidden_countries_log.txt')
 
