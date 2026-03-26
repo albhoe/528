@@ -3,10 +3,10 @@ exec > /var/log/startup-script.log 2>&1
 set -x
 
 apt-get update -y
-apt-get install --reinstall ca-certificates -y
-update-ca-certificates
-
 apt-get install -y python3-pip git
+
+echo "export GOOGLE_METADATA_SERVICE_HTTPS=false" >> /etc/environment
+
 git clone https://github.com/albhoe/528.git /opt/528
 pip3 install --break-system-packages -r /opt/528/hw5/requirements.txt
 export BUCKET_NAME='alhoe528hw2'

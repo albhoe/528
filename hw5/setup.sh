@@ -12,13 +12,11 @@ FORBIDDEN_SERVICE_ACCOUNT="hw4-forbidden-serviceaccount@${PROJECT_ID}.iam.gservi
 # Allocate the static IP
 gcloud compute addresses create webserver-ip \
     --region=$REGION \
-    --zone=$ZONE \
     --project=$PROJECT_ID
 
 # Retrieve the allocated IP into a variable
 STATIC_IP=$(gcloud compute addresses describe webserver-ip \
     --region=$REGION \
-    --zone=$ZONE \
     --project=$PROJECT_ID \
     --format='get(address)')
 
