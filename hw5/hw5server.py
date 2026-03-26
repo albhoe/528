@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from google.cloud import storage
 from google.cloud import pubsub_v1
 import logging
