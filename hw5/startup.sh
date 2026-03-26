@@ -5,6 +5,9 @@ set -x
 apt-get update -y
 apt-get install -y python3-pip git
 
+pip3 install --break-system-packages google-auth==2.22.0
+pip3 install --break-system-packages requests==2.28.2
+
 export GOOGLE_METADATA_SERVICE_HTTPS=false
 echo "export GOOGLE_METADATA_SERVICE_HTTPS=false" >> /etc/environment
 
