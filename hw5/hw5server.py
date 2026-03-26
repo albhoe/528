@@ -8,8 +8,14 @@ import time
 
 PROJECT_ID = "bucsece528"
 
-client = google.cloud.logging.Client(project=PROJECT_ID)
-client.setup_logging(project=PROJECT_ID)
+_logging_client = None
+
+def get_logging_client():
+    global _logging_client
+    if _logging_client is None:
+        _logging_client = google.cloud.logging.Client(project=PROJECT_ID)
+        _logging_client.setup_logging()
+    return _logging_client
 
 app = Flask(__name__)
 
@@ -93,6 +99,7 @@ def send_faildata(data,error_code):
 
 @app.route('/', methods=['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH'])
 def process_request():
+    get_logging_client()
     if request.method == "GET":
         headers = get_headers(request)
         country = request.headers.get('X-country') #I could extract the header using the function, but I'm scared of breaking things.
