@@ -87,7 +87,7 @@ def send_requestdata(data):
     connection.commit()
 
 def send_faildata(data,error_code):
-    log_entry = tuple(data['timestamp'],data['time_of_day'],data['path'],error_code)
+    log_entry = tuple(data['timestamp'],data['time_of_day'],data['requested_file'],error_code)
     connection = connect_to_db()
     with connection.cursor() as cursor:
         cursor.execute("""
