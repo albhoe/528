@@ -11,6 +11,8 @@ SQL_INSTANCE="alhoe-hw5-mysqlinstance"
 
 gcloud config set project $PROJECT_ID
 
+pip install pymysql
+
 # ── Cloud SQL ──────────────────────────────────────────────────────────────────
 DB_EXISTS=$(gcloud sql databases list \
     --instance=$SQL_INSTANCE \
