@@ -14,6 +14,6 @@ python3 -m venv /opt/venv
 source /opt/venv/bin/activate
 
 git clone https://github.com/albhoe/528.git /opt/528
-pip install -r /opt/528/hw5/requirements.txt
+pip3 install -r /opt/528/hw5/requirements.txt
 
 nohup python3 /opt/528/hw5/hw5server.py > /root/server.log 2>&1 &

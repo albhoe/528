@@ -1,4 +1,4 @@
-from flask import *
+from flask import Flask
 from google.cloud import storage
 from google.cloud import pubsub_v1
 import logging
@@ -116,14 +116,15 @@ def process_request():
             return 'Permission Denied', 400
 
         name = request.args.get('file')
-        blob = bucket.blob(name)
-        if blob.exists():
-            send_requestdata(headers)
-            return blob.download_as_text(), 200
-        else:
-            logging.error({"message": "File not found", "file": name})
-            send_faildata(headers,404)
-            return f"Not Found Error: {name} does not exist", 404
+        if name:
+            blob = bucket.blob(name)
+            if blob.exists():
+                send_requestdata(headers)
+                return blob.download_as_text(), 200
+        
+        logging.error({"message": "File not found", "file": name})
+        send_faildata(headers,404)
+        return f"Not Found Error: {name} does not exist", 404
     else:
         logging.error({'message':'Request for unimplemented function','method':request.method})
         send_faildata(headers,501)
