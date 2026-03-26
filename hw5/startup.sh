@@ -6,8 +6,6 @@ if [ -f /var/log/startup_already_done ]; then
    exit 0
 fi
 
-export DEBIAN_FRONTEND=noninteractive
-
 apt-get update -y
 apt-get install -y python3-pip python3-venv git
 

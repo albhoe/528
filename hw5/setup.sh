@@ -1,6 +1,5 @@
 #!/bin/bash
-
-set -e 
+set -e
 
 PROJECT_ID="bucsece528"
 BUCKET="alhoe528hw2"
@@ -8,15 +7,43 @@ REGION="us-east5"
 ZONE="us-east5-a"
 WEBSERVER_SERVICE_ACCOUNT="hw4-webserver-serviceaccount@${PROJECT_ID}.iam.gserviceaccount.com"
 FORBIDDEN_SERVICE_ACCOUNT="hw4-forbidden-serviceaccount@${PROJECT_ID}.iam.gserviceaccount.com"
+SQL_INSTANCE="alhoe-hw5-mysqlinstance"
 
 gcloud config set project $PROJECT_ID
 
-# Allocate the static IP
+# ── Cloud SQL ──────────────────────────────────────────────────────────────────
+DB_EXISTS=$(gcloud sql databases list \
+    --instance=$SQL_INSTANCE \
+    --project=$PROJECT_ID \
+    --filter="name=cs528-hw5-database" \
+    --format="value(name)" 2>/dev/null || echo "")
+
+if [ -z "$DB_EXISTS" ]; then
+    echo "Starting Cloud SQL instance and creating schema..."
+    gcloud sql instances patch $SQL_INSTANCE \
+        --activation-policy=ALWAYS \
+        --project=$PROJECT_ID
+    # Wait for it to be ready
+    gcloud sql operations wait \
+        $(gcloud sql operations list \
+            --instance=$SQL_INSTANCE \
+            --project=$PROJECT_ID \
+            --format="value(name)" \
+            --limit=1) \
+        --project=$PROJECT_ID
+    python3 startup_schema.py
+else
+    echo "Database exists, just starting Cloud SQL instance..."
+    gcloud sql instances patch $SQL_INSTANCE \
+        --activation-policy=ALWAYS \
+        --project=$PROJECT_ID
+fi
+
+# ── Static IP ─────────────────────────────────────────────────────────────────
 gcloud compute addresses create webserver-ip \
     --region=$REGION \
     --project=$PROJECT_ID
 
-# Retrieve the allocated IP into a variable
 STATIC_IP=$(gcloud compute addresses describe webserver-ip \
     --region=$REGION \
     --project=$PROJECT_ID \
@@ -24,7 +51,7 @@ STATIC_IP=$(gcloud compute addresses describe webserver-ip \
 
 echo "Static IP allocated: $STATIC_IP"
 
-#Create Web Server 
+# ── VMs ───────────────────────────────────────────────────────────────────────
 gcloud compute instances create hw4-webserver \
     --zone=$ZONE \
     --machine-type=e2-micro \
