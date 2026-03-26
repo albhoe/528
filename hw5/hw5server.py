@@ -6,14 +6,16 @@ import google.cloud.logging
 import pymysql
 import time
 
-client = google.cloud.logging.Client(project="bucsece528")
-client.setup_logging()
+PROJECT_ID = "bucsece528"
+
+client = google.cloud.logging.Client(project=PROJECT_ID)
+client.setup_logging(project=PROJECT_ID)
 
 app = Flask(__name__)
 
 BANNED_COUNTRIES = ['North Korea', 'Iran', 'Cuba', 'Myanmar', 'Iraq', 'Libya', 'Sudan', 'Zimbabwe', 'Syria']
 
-storage_client = storage.Client()
+storage_client = storage.Client(project=PROJECT_ID)
 bucket = storage_client.bucket('alhoe528hw2')
 publisher = pubsub_v1.PublisherClient()
 topic_path = publisher.topic_path("bucsece528", "hw3topic")
