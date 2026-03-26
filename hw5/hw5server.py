@@ -92,7 +92,7 @@ def send_faildata(data,error_code):
     connection.commit()
 
 @app.route('/', methods=['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH'])
-def process_request(request):
+def process_request():
     if request.method == "GET":
         headers = headers(request)
         country = request.headers.get('X-country') #I could extract the header using the function, but I'm scared of breaking things.
