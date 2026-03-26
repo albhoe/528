@@ -82,7 +82,7 @@ def send_requestdata(data):
         cursor.execute("""
             INSERT INTO requests
               (timestamp,country, client_ip, gender, age, income, is_banned, time_of_day, requested_file)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """, tuple(data.values()))
     connection.commit()
 

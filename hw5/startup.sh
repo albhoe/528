@@ -2,16 +2,20 @@
 exec > /var/log/startup-script.log 2>&1
 set -x
 
-export PYTHONHTTPSVERIFY=0
-export GOOGLE_CLOUD_PROJECT=bucsece528
-gcloud auth application-default login --no-launch-browser
-gcloud auth application-default print-access-token
-
 apt-get update -y
-apt-get install -y python3-pip python3-venv git
+apt-get install -y python3-pip python3-venv git ca-certificates
 
+# Create and activate venv
 python3 -m venv /opt/venv
 source /opt/venv/bin/activate
+
+# Upgrade pip and install certifi
+pip3 install --upgrade pip
+pip3 install certifi
+
+# Tell Python where the certificates are
+export SSL_CERT_FILE=$(python3 -m certifi)
+export REQUESTS_CA_BUNDLE=$(python3 -m certifi)
 
 git clone https://github.com/albhoe/528.git /opt/528
 pip3 install -r /opt/528/hw5/requirements.txt
