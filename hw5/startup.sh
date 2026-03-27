@@ -11,7 +11,7 @@ apt-get install -y python3-pip git wget
 
 #Connect to database programmatically
 wget https://dev.mysql.com/get/Downloads/MySQL-8.4/mysql-server_8.4.8-1debian13_amd64.deb-bundle.tar
-tar -xvf mysql-server_8.4.8-1debian20.04_amd64.deb-bundle.tar
+tar -xvf mysql-server_8.4.8-1debian13_amd64.deb-bundle.tar
 sudo apt-get install libaio1
 sudo dpkg-preconfigure mysql-community-server_*.deb
 sudo dpkg -i mysql*.deb
@@ -20,6 +20,9 @@ sudo apt-get -f install
 pip3 install --break-system-packages pymysql
 pip3 install --break-system-packages sqlalchemy
 pip3 install --break-system-packages "cloud-sql-python-connector[pymysql]"
+
+
+gcloud config set project "bucsece528"
 
 #Load files through GitHub
 git clone https://github.com/albhoe/528.git /opt/528
@@ -32,4 +35,4 @@ nohup env PROJECT_ID=bucsece528 \
            DB_PASS='' \
            DB_NAME=cs528-hw5-database \
            INSTANCE_CONNECTION_NAME=bucsece528:us-east5:alhoe-hw5-mysqlinstance-b \
-           python3 -u /opt/528/hw4/server.py > /root/server.log 2>&1 &
+           python3 -u /opt/528/hw5/server.py > /root/server.log 2>&1 &

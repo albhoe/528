@@ -34,7 +34,6 @@ def get_bucket():
     if _bucket is None:
         _storage_client = storage.Client(project=PROJECT_ID)
         _bucket = _storage_client.bucket('alhoe528hw2')
-        print(f"Initialized Cloud Storage client and bucket: {_bucket}")
     return _bucket
 
 publisher = pubsub_v1.PublisherClient()
