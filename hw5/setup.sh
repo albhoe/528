@@ -3,8 +3,8 @@ set -e
 
 PROJECT_ID="bucsece528"
 BUCKET="alhoe528hw2"
-REGION="us-central1"
-ZONE="us-central1-a"
+REGION="us-east5"
+ZONE="us-east5-a"
 WEBSERVER_SERVICE_ACCOUNT="hw4-webserver-serviceaccount@${PROJECT_ID}.iam.gserviceaccount.com"
 FORBIDDEN_SERVICE_ACCOUNT="hw4-forbidden-serviceaccount@${PROJECT_ID}.iam.gserviceaccount.com"
 SQL_INSTANCE="alhoe-hw5-mysqlinstance"
