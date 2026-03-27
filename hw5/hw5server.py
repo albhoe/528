@@ -31,7 +31,7 @@ topic_path = publisher.topic_path("bucsece528", "hw3topic")
 connector = Connector()
 
 def getconn():
-    logging.debug("Establishing new database connection")
+    print("Establishing new database connection")
     conn = connector.connect(
       INSTANCE_CONNECTION_NAME,
       "pymysql",
@@ -39,7 +39,7 @@ def getconn():
       password=DB_PASS,
       db=DB_NAME
     )
-    logging.debug("Database connection established successfully")
+    print("Database connection established successfully")
     return conn
 
 pool = sqlalchemy.create_engine(
@@ -122,50 +122,50 @@ def send_faildata(data, error_code, db_conn):
 
 @app.route('/', methods=['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH'])
 def process_request():
-    logging.debug(f"Received {request.method} request at / endpoint")
+    print(f"Received {request.method} request at / endpoint")
     with pool.connect() as db_conn:
-        logging.debug("Connection to database established")
+        print("Connection to database established")
 
         if request.method == "GET":
-            logging.debug("Processing GET request")
+            print("Processing GET request")
             headers = get_headers(request)
-            logging.debug(f"Extracted headers: {headers}")
+            print(f"Extracted headers: {headers}")
             country = request.headers.get('X-country') #I could extract the header using the function, but I'm scared of breaking things.
             if country in BANNED_COUNTRIES:
-                logging.debug(f"Country {country} is banned. Logging and returning 403.")
+                print(f"Country {country} is banned. Logging and returning 403.")
                 message = f'Permission Denied because X-country header = {country}'
                 data = message.encode("utf-8")
                 try:
                     future = publisher.publish(topic_path, data)
                     future.result(timeout=10)
-                    logging.debug("Published message to Pub/Sub successfully")
+                    print("Published message to Pub/Sub successfully")
                 except Exception as e:
                     logging.error(f'Publish Error:{e}')
                 logging.error({'message':message})
                 send_faildata(headers,400,db_conn)
-                logging.debug("Inserted error data into database")
+                print("Inserted error data into database")
                 return 'Permission Denied', 400
 
             name = request.args.get('file')
             if name:
-                logging.debug("file parameter is not null")
+                print("file parameter is not null")
                 blob = bucket.blob(name)
                 if blob.exists():
-                    logging.debug(f"File {name} found in bucket. Logging request data and returning file content.")
+                    print(f"File {name} found in bucket. Logging request data and returning file content.")
                     send_requestdata(headers,db_conn)
-                    logging.debug("Inserted request data into database")
+                    print("Inserted request data into database")
                     return blob.download_as_text(), 200
             
             logging.error({"message": "File not found", "file": name})
             send_faildata(headers,404,db_conn)
-            logging.debug("Inserted error data into database for file not found")
+            print("Inserted error data into database for file not found")
             return f"Not Found Error: {name} does not exist", 404
         else:
             logging.error({'message':'Request for unimplemented function','method':request.method})
             send_faildata(headers,501,db_conn)
-            logging.debug("Inserted error data into database for unimplemented method")
+            print("Inserted error data into database for unimplemented method")
             return "Not Implemented", 
 
 if __name__ == "__main__":
-    logging.debug("Starting Flask application")
+    print("Starting Flask application")
     app.run(host="0.0.0.0", port=8080, threaded=True)
