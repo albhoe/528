@@ -150,12 +150,15 @@ def process_request():
             if name:
                 print("file parameter is not null")
                 blob = bucket.blob(name)
+                print(blob)
                 if blob.exists():
                     print(f"File {name} found in bucket. Logging request data and returning file content.")
                     send_requestdata(headers,db_conn)
                     print("Inserted request data into database")
                     return blob.download_as_text(), 200
-            
+                print(f"File {name} not found in bucket. Logging error and returning 404.")
+            else:
+                print("file parameter is null. Logging error and returning 404.")
             logging.error({"message": "File not found", "file": name})
             send_faildata(headers,404,db_conn)
             print("Inserted error data into database for file not found")
