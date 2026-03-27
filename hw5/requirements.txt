@@ -1,7 +1,5 @@
 pymysql
-functions-framework==3.*
-google-cloud-pubsub==2.18.0
-grpcio==1.59.0
+google-cloud-pubsub
 google-cloud-storage
 google-cloud-logging
 flask
