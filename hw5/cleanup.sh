@@ -7,7 +7,7 @@ SQL_INSTANCE="alhoe-hw5-mysqlinstance"
 
 # Stop Cloud SQL (do NOT delete it)
 gcloud sql instances patch $SQL_INSTANCE \
-    --activation-policy=NEVER \
+    #--activation-policy=NEVER \
     --clear-authorized-networks \
     --project=$PROJECT_ID
 
