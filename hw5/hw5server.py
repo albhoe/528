@@ -42,8 +42,7 @@ def getconn():
       "pymysql",
       user=DB_USER,
       password=DB_PASS,
-      db=DB_NAME,
-      ip_type=IPTypes.PRIVATE
+      db=DB_NAME
     )
     return conn
 
