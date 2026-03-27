@@ -33,6 +33,7 @@ def get_bucket():
     if _bucket is None:
         _storage_client = storage.Client(project=PROJECT_ID)
         _bucket = _storage_client.bucket('alhoe528hw2')
+        print(f"Initialized Cloud Storage client and bucket: {_bucket}")
     return _bucket
 
 publisher = pubsub_v1.PublisherClient()
@@ -41,7 +42,6 @@ topic_path = publisher.topic_path("bucsece528", "hw3topic")
 connector = Connector()
 
 def getconn():
-    print("Establishing new database connection")
     conn = connector.connect(
       INSTANCE_CONNECTION_NAME,
       "pymysql",
@@ -101,6 +101,7 @@ def get_headers(request):
     }
 
 def send_requestdata(data, db_conn):
+    print(f"Logging request data: {data}")
     db_conn.execute(sqlalchemy.text("""
         INSERT INTO requests
         (timestamp, country, client_ip, gender, age, income, is_banned, time_of_day, requested_file)
@@ -119,6 +120,7 @@ def send_requestdata(data, db_conn):
     db_conn.commit()
     
 def send_faildata(data, error_code, db_conn):
+    print(f"Logging error with code {error_code} for request: {data}")
     db_conn.execute(sqlalchemy.text("""
         INSERT INTO errors
         (timestamp, time_of_day, requested_file, error_code)
@@ -162,7 +164,12 @@ def process_request():
                 print("file parameter is not null")
                 blob = get_bucket().blob(name)
                 print(f"Blob: {blob}")
-                if blob.exists(timeout=5):
+                try:
+                    print(f"{blob.exists(timeout=1)}")
+                except Exception as e:
+                    print(f"Error checking if blob exists: {e}")
+                    logging.error(f"Error checking if blob exists: {e}")
+                if blob.exists(timeout=1):
                     print(f"File {name} found in bucket. Logging request data and returning file content.")
                     send_requestdata(headers,db_conn)
                     print("Inserted request data into database")
