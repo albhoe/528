@@ -11,7 +11,7 @@ import socket, struct
 import sqlalchemy
 
 PROJECT_ID = os.getenv('PROJECT_ID', 'bucsece528')
-INSTANCE_CONNECTION_NAME = os.getenv('INSTANCE_CONNECTION_NAME', 'bucsece528:us-central1:alhoe-hw5-mysqlinstance-b')
+INSTANCE_CONNECTION_NAME = os.getenv('INSTANCE_CONNECTION_NAME', 'bucsece528:us-east5:alhoe-hw5-mysqlinstance-b')
 DB_USER = os.getenv('DB_USER', 'root')
 DB_PASS = os.getenv('DB_PASS', '')
 DB_NAME = os.getenv('DB_NAME', 'cs528-hw5-database')

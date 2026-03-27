@@ -6,10 +6,10 @@ ZONE='us-east5-a'
 SQL_INSTANCE="alhoe-hw5-mysqlinstance-b"
 
 # Stop Cloud SQL (do NOT delete it)
-gcloud sql instances patch $SQL_INSTANCE \
-    #--activation-policy=NEVER \
-    --clear-authorized-networks \
-    --project=$PROJECT_ID
+#gcloud sql instances patch $SQL_INSTANCE \
+#    --activation-policy=NEVER \
+#    --clear-authorized-networks \
+#    --project=$PROJECT_ID
 
 
 # Delete VMs

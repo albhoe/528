@@ -19,7 +19,7 @@ PROJECT_ID=bucsece528
 DB_USER=root
 DB_PASS=''
 DB_NAME=cs528-hw5-database
-INSTANCE_CONNECTION_NAME=bucsece528:us-central1:alhoe-hw5-mysqlinstance-b
+INSTANCE_CONNECTION_NAME=bucsece528:us-east5:alhoe-hw5-mysqlinstance-b
 
 # ── Static IP ─────────────────────────────────────────────────────────────────
 gcloud compute addresses create webserver-ip \
