@@ -179,6 +179,7 @@ def process_request():
                 except Exception as e:
                     print(f"Error downloading file {name}: {e}")
                     logging.error(f"Error downloading file {name}: {e}")
+                    return f"Error downloading file {name}", 500
             
             print("file parameter is null. Logging error and returning 404.")
             logging.error({"message": "File not found", "file": name})

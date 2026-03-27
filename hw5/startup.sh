@@ -32,4 +32,4 @@ nohup env PROJECT_ID=bucsece528 \
            DB_PASS='' \
            DB_NAME=cs528-hw5-database \
            INSTANCE_CONNECTION_NAME=bucsece528:us-east5:alhoe-hw5-mysqlinstance-b \
-           python3 -u /opt/528/hw5/hw5server.py > /root/server.log 2>&1 &
+           python3 -u /opt/528/hw4/server.py > /root/server.log 2>&1 &
