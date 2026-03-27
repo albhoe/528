@@ -7,7 +7,7 @@ REGION="us-east5"
 ZONE="us-east5-a"
 WEBSERVER_SERVICE_ACCOUNT="hw4-webserver-serviceaccount@${PROJECT_ID}.iam.gserviceaccount.com"
 FORBIDDEN_SERVICE_ACCOUNT="hw4-forbidden-serviceaccount@${PROJECT_ID}.iam.gserviceaccount.com"
-SQL_INSTANCE="alhoe-hw5-mysqlinstance"
+SQL_INSTANCE="alhoe-hw5-mysqlinstance-b"
 
 gcloud config set project $PROJECT_ID
 
@@ -19,7 +19,7 @@ PROJECT_ID=bucsece528
 DB_USER=root
 DB_PASS=''
 DB_NAME=cs528-hw5-database
-INSTANCE_CONNECTION_NAME=bucsece528:us-central1:alhoe-hw5-mysqlinstance
+INSTANCE_CONNECTION_NAME=bucsece528:us-central1:alhoe-hw5-mysqlinstance-b
 
 # ── Static IP ─────────────────────────────────────────────────────────────────
 gcloud compute addresses create webserver-ip \

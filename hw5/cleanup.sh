@@ -3,7 +3,7 @@
 PROJECT_ID="bucsece528"
 REGION='us-east5'
 ZONE='us-east5-a'
-SQL_INSTANCE="alhoe-hw5-mysqlinstance"
+SQL_INSTANCE="alhoe-hw5-mysqlinstance-b"
 
 # Stop Cloud SQL (do NOT delete it)
 gcloud sql instances patch $SQL_INSTANCE \

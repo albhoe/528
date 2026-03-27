@@ -31,5 +31,5 @@ nohup env PROJECT_ID=bucsece528 \
            DB_USER=root \
            DB_PASS='' \
            DB_NAME=cs528-hw5-database \
-           INSTANCE_CONNECTION_NAME=bucsece528:us-central1:alhoe-hw5-mysqlinstance \
+           INSTANCE_CONNECTION_NAME=bucsece528:us-central1:alhoe-hw5-mysqlinstance-b \
            python3 /opt/528/hw5/hw5server.py > /root/server.log 2>&1 &
