@@ -1,36 +1,70 @@
+import os
+from google.cloud.sql.connector import Connector, IPTypes
 import pymysql
+import socket, struct
+import sqlalchemy
 
-connection = pymysql.connect(
-    host='35.226.17.220',
-    user='root',
-    password='',
-    database='alhoe-hw5-mysqlinstance'
+PROJECT_ID = os.getenv('PROJECT_ID', 'bucsece528')
+INSTANCE_CONNECTION_NAME = os.getenv('INSTANCE_CONNECTION_NAME', '')
+DB_USER = os.getenv('DB_USER', 'root')
+DB_PASS = os.getenv('DB_PASS', '')
+DB_NAME = os.getenv('DB_NAME', 'cs528-hw5-database')
+
+connector = Connector()
+
+def getconn():
+    conn = connector.connect(
+        INSTANCE_CONNECTION_NAME,
+        "pymysql",
+        user=DB_USER,
+        password=DB_PASS,
+        db=DB_NAME,
+        ip_type=IPTypes.PRIVATE
+    )
+    return conn
+
+pool = sqlalchemy.create_engine(
+    "mysql+pymysql://",
+    creator=getconn,
 )
 
-with connection.cursor() as cursor:
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS requests (
-            id             INT AUTO_INCREMENT PRIMARY KEY,
-            timestamp      DATETIME,
-            country        VARCHAR(64),
-            client_ip      VARCHAR(45),
-            gender         VARCHAR(16),
-            age            INT,
-            income         FLOAT,
-            is_banned      BOOLEAN,
-            time_of_day    TIME,
-            requested_file VARCHAR(256)
+with pool.connect() as db_conn:
+  # create ratings table in our sandwiches database
+    db_conn.execute(
+        sqlalchemy.text(
+        """
+            CREATE TABLE IF NOT EXISTS requests (
+                id             INT AUTO_INCREMENT PRIMARY KEY,
+                timestamp      DATETIME,
+                country        VARCHAR(64),
+                client_ip      VARCHAR(45),
+                gender         VARCHAR(16),
+                age            INT,
+                income         FLOAT,
+                is_banned      BOOLEAN,
+                time_of_day    TIME,
+                requested_file VARCHAR(256)
+            )
+        """
         )
-    """)
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS errors (
-            id             INT AUTO_INCREMENT PRIMARY KEY,
-            timestamp      DATETIME,
-            time_of_day    TIME,
-            requested_file VARCHAR(256),
-            error_code     INT
+    )
+  
+
+    # commit transaction (SQLAlchemy v2.X.X is commit as you go)
+    db_conn.commit()
+    db_conn.execute(
+        sqlalchemy.text(
+            """
+            CREATE TABLE IF NOT EXISTS errors (
+                id             INT AUTO_INCREMENT PRIMARY KEY,
+                timestamp      DATETIME,
+                time_of_day    TIME,
+                requested_file VARCHAR(256),
+                error_code     INT
+            )
+        """
         )
-    """)
-connection.commit()
-connection.close()
+    )
+    db_conn.commit()
+connector.close()
 print("Schema created successfully.")

@@ -10,7 +10,11 @@ import pymysql
 import socket, struct
 import sqlalchemy
 
-PROJECT_ID = "bucsece528"
+PROJECT_ID = os.getenv('PROJECT_ID', 'bucsece528')
+INSTANCE_CONNECTION_NAME = os.getenv('INSTANCE_CONNECTION_NAME', '')
+DB_USER = os.getenv('DB_USER', 'root')
+DB_PASS = os.getenv('DB_PASS', '')
+DB_NAME = os.getenv('DB_NAME', 'cs528-hw5-database')
 
 _logging_client = None
 
@@ -30,13 +34,23 @@ bucket = storage_client.bucket('alhoe528hw2')
 publisher = pubsub_v1.PublisherClient()
 topic_path = publisher.topic_path("bucsece528", "hw3topic")
 
-def connect_to_db():
-    return pymysql.connect(
-        host='35.226.17.220',
-        user='root',
-        password='',
-        database='cs528-hw5-database'
+connector = Connector()
+
+def getconn():
+    conn = connector.connect(
+      INSTANCE_CONNECTION_NAME,
+      "pymysql",
+      user=DB_USER,
+      password=DB_PASS,
+      db=DB_NAME,
+      ip_type=IPTypes.PRIVATE
     )
+    return conn
+
+pool = sqlalchemy.create_engine(
+    "mysql+pymysql://",
+    creator=getconn,
+)
 
 def get_headers(request):
     timestamp = time.strftime('%Y-%m-%d %H:%M:%S'), #USE THIS AS PRIMARY KEY
