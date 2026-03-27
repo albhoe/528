@@ -25,7 +25,7 @@ export PROJECT_ID=bucsece528
 export DB_USER=root
 export DB_PASS=''
 export DB_NAME=cs528-hw5-database
-export INSTANCE_CONNECTION_NAME= bucsece528:us-east1:alhoe-hw5-mysqlinstance
+export INSTANCE_CONNECTION_NAME= bucsece528:us-central1:alhoe-hw5-mysqlinstance
 
 #Load files through GitHub
 git clone https://github.com/albhoe/528.git /opt/528

@@ -1,8 +1,8 @@
 #!/bin/bash
 
 PROJECT_ID="bucsece528"
-REGION='us-east5'
-ZONE='us-east5-a'
+REGION='us-central1'
+ZONE='us-central1-a'
 SQL_INSTANCE="alhoe-hw5-mysqlinstance"
 
 # Stop Cloud SQL (do NOT delete it)

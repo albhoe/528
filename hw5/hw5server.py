@@ -94,58 +94,56 @@ def get_headers(request):
         'requested_file': path
     }
 
-def send_requestdata(data,connection):
-    with connection.cursor() as cursor:
-        cursor.execute("""
-            INSERT INTO requests
-              (timestamp,country, client_ip, gender, age, income, is_banned, time_of_day, requested_file)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """, tuple(data.values()))
-    connection.commit()
+def send_requestdata(data,db_conn):
+    db_conn.execute(sqlalchemy.text("""
+        INSERT INTO requests
+        (timestamp,country, client_ip, gender, age, income, is_banned, time_of_day, requested_file)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """), parameters=(data.values()))
+    db_conn.commit()
 
-def send_faildata(data,error_code,connection):
+def send_faildata(data,error_code,db_conn):
     log_entry = (data['timestamp'],data['time_of_day'],data['requested_file'],error_code)
-    with connection.cursor() as cursor:
-        cursor.execute("""
+    db_conn.execute(sqlalchemy.text("""
             INSERT INTO errors
               (timestamp, time_of_day, requested_file, error_code)
             VALUES (%s, %s, %s, %s)
-        """, log_entry)
-    connection.commit()
+        """), parameters=(log_entry))
+    db_conn.commit()
 
 @app.route('/', methods=['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH'])
 def process_request():
-    connection=connect_to_db()
-    get_logging_client()
-    if request.method == "GET":
-        headers = get_headers(request)
-        country = request.headers.get('X-country') #I could extract the header using the function, but I'm scared of breaking things.
-        if country in BANNED_COUNTRIES:
-            message = f'Permission Denied because X-country header = {country}'
-            data = message.encode("utf-8")
-            try:
-                future = publisher.publish(topic_path, data)
-                future.result(timeout=10)
-            except Exception as e:
-                logging.error(f'Publish Error:{e}')
-            logging.error({'message':message})
-            send_faildata(headers,400,connection)
-            return 'Permission Denied', 400
+    with pool.connect() as db_conn:
+        get_logging_client()
+        if request.method == "GET":
+            headers = get_headers(request)
+            country = request.headers.get('X-country') #I could extract the header using the function, but I'm scared of breaking things.
+            if country in BANNED_COUNTRIES:
+                message = f'Permission Denied because X-country header = {country}'
+                data = message.encode("utf-8")
+                try:
+                    future = publisher.publish(topic_path, data)
+                    future.result(timeout=10)
+                except Exception as e:
+                    logging.error(f'Publish Error:{e}')
+                logging.error({'message':message})
+                send_faildata(headers,400,db_conn)
+                return 'Permission Denied', 400
 
-        name = request.args.get('file')
-        if name:
-            blob = bucket.blob(name)
-            if blob.exists():
-                send_requestdata(headers,connection)
-                return blob.download_as_text(), 200
-        
-        logging.error({"message": "File not found", "file": name})
-        send_faildata(headers,404,connection)
-        return f"Not Found Error: {name} does not exist", 404
-    else:
-        logging.error({'message':'Request for unimplemented function','method':request.method})
-        send_faildata(headers,501,connection)
-        return "Not Implemented", 
+            name = request.args.get('file')
+            if name:
+                blob = bucket.blob(name)
+                if blob.exists():
+                    send_requestdata(headers,db_conn)
+                    return blob.download_as_text(), 200
+            
+            logging.error({"message": "File not found", "file": name})
+            send_faildata(headers,404,db_conn)
+            return f"Not Found Error: {name} does not exist", 404
+        else:
+            logging.error({'message':'Request for unimplemented function','method':request.method})
+            send_faildata(headers,501,db_conn)
+            return "Not Implemented", 
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080, threaded=True)
