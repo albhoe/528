@@ -24,6 +24,7 @@ if [ -z "$DB_EXISTS" ]; then
     echo "Starting Cloud SQL instance and creating schema..."
     gcloud sql instances patch $SQL_INSTANCE \
         --activation-policy=ALWAYS \
+        --authorized-networks=$STATIC_IP \
         --project=$PROJECT_ID
     # Wait for it to be ready
     gcloud sql operations wait \
@@ -38,6 +39,7 @@ else
     echo "Database exists, just starting Cloud SQL instance..."
     gcloud sql instances patch $SQL_INSTANCE \
         --activation-policy=ALWAYS \
+        --authorized-networks=$STATIC_IP \
         --project=$PROJECT_ID
 fi
 
@@ -52,6 +54,9 @@ STATIC_IP=$(gcloud compute addresses describe webserver-ip \
     --format='get(address)')
 
 echo "Static IP allocated: $STATIC_IP"
+
+#Adds this IP to the authorized networks of the SQL instance so that the webserver can connect to it
+#I think this resets every time the IP changes, so it doesn't strictly need to be in the cleanup script.
 
 # ── VMs ───────────────────────────────────────────────────────────────────────
 gcloud compute instances create hw4-webserver \

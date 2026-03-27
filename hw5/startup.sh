@@ -17,9 +17,9 @@ sudo dpkg-preconfigure mysql-community-server_*.deb
 sudo dpkg -i mysql*.deb
 sudo apt-get -f install
 
-pip3 install pymysql
-pip3 install sqlalchemy
-pip3 install "cloud-sql-python-connector[pymysql]"
+pip3 install --break-system-packages pymysql
+pip3 install --break-system-packages sqlalchemy
+pip3 install --break-system-packages "cloud-sql-python-connector[pymysql]"
 
 export PROJECT_ID=bucsece528
 export DB_USER=root
