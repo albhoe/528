@@ -10,8 +10,8 @@ apt-get update -y
 apt-get install -y python3-pip git wget
 
 #Connect to database programmatically
-wget https://dev.mysql.com/get/Downloads/MySQL-8.4/mysql-server_8.4.8-1ubuntu20.04_amd64.deb-bundle.tar
-tar -xvf mysql-server_8.4.8-1ubuntu20.04_amd64.deb-bundle.tar
+wget https://dev.mysql.com/get/Downloads/MySQL-8.4/mysql-server_8.4.8-1debian13_amd64.deb-bundle.tar
+tar -xvf mysql-server_8.4.8-1debian20.04_amd64.deb-bundle.tar
 sudo apt-get install libaio1
 sudo dpkg-preconfigure mysql-community-server_*.deb
 sudo dpkg -i mysql*.deb
