@@ -7,7 +7,7 @@ if [ -f /var/log/startup_already_done ]; then
 fi
 
 apt-get update -y
-apt-get install -y python3-pip git
+apt-get install -y python3-pip git wget
 
 #Connect to database programmatically
 wget https://dev.mysql.com/get/Downloads/MySQL-8.4/mysql-server_8.4.8-1ubuntu20.04_amd64.deb-bundle.tar
@@ -21,16 +21,15 @@ pip3 install --break-system-packages pymysql
 pip3 install --break-system-packages sqlalchemy
 pip3 install --break-system-packages "cloud-sql-python-connector[pymysql]"
 
-export PROJECT_ID=bucsece528
-export DB_USER=root
-export DB_PASS=''
-export DB_NAME=cs528-hw5-database
-export INSTANCE_CONNECTION_NAME= bucsece528:us-central1:alhoe-hw5-mysqlinstance
-
 #Load files through GitHub
 git clone https://github.com/albhoe/528.git /opt/528
 pip3 install --break-system-packages -r /opt/528/hw5/requirements.txt
 
 touch /var/log/startup_already_done
 
-nohup python3 /opt/528/hw5/hw5server.py > /root/server.log 2>&1 &
+nohup env PROJECT_ID=bucsece528 \
+           DB_USER=root \
+           DB_PASS='' \
+           DB_NAME=cs528-hw5-database \
+           INSTANCE_CONNECTION_NAME=bucsece528:us-central1:alhoe-hw5-mysqlinstance \
+           python3 /opt/528/hw5/hw5server.py > /root/server.log 2>&1 &
