@@ -9,6 +9,7 @@ from google.cloud.sql.connector import Connector, IPTypes
 import pymysql
 import socket, struct
 import sqlalchemy
+from google.cloud.exceptions import NotFound
 
 _storage_client = None
 _bucket = None
@@ -165,18 +166,21 @@ def process_request():
                 blob = get_bucket().blob(name)
                 print(f"Blob: {blob}")
                 try:
-                    print(f"{blob.exists(timeout=1)}")
-                except Exception as e:
-                    print(f"Error checking if blob exists: {e}")
-                    logging.error(f"Error checking if blob exists: {e}")
-                if blob.exists(timeout=1):
-                    print(f"File {name} found in bucket. Logging request data and returning file content.")
+                    content = blob.download_as_text()
+                    print(f"File {name} found in bucket. Logging request data and returning content.")
                     send_requestdata(headers,db_conn)
                     print("Inserted request data into database")
-                    return blob.download_as_text(), 200
-                print(f"File {name} not found in bucket or timed out. Logging error and returning 404.")
-            else:
-                print("file parameter is null. Logging error and returning 404.")
+                    return content, 200
+                except NotFound:
+                    print(f"File {name} not found in bucket. Logging error and returning 404.")
+                    logging.error({"message": "File not found", "file": name})
+                    send_faildata(headers,404,db_conn)
+                    return f"Not Found Error: {name} does not exist", 404
+                except Exception as e:
+                    print(f"Error downloading file {name}: {e}")
+                    logging.error(f"Error downloading file {name}: {e}")
+            
+            print("file parameter is null. Logging error and returning 404.")
             logging.error({"message": "File not found", "file": name})
             send_faildata(headers,404,db_conn)
             print("Inserted error data into database for file not found")
