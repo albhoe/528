@@ -93,21 +93,35 @@ def get_headers(request):
         'requested_file': path
     }
 
-def send_requestdata(data,db_conn):
+def send_requestdata(data, db_conn):
     db_conn.execute(sqlalchemy.text("""
         INSERT INTO requests
-        (timestamp,country, client_ip, gender, age, income, is_banned, time_of_day, requested_file)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """), parameters=(data.values()))
+        (timestamp, country, client_ip, gender, age, income, is_banned, time_of_day, requested_file)
+        VALUES (:timestamp, :country, :client_ip, :gender, :age, :income, :is_banned, :time_of_day, :requested_file)
+    """), {
+        'timestamp':      data['timestamp'],
+        'country':        data['country'],
+        'client_ip':      data['client_ip'],
+        'gender':         data['gender'],
+        'age':            data['age'],
+        'income':         data['income'],
+        'is_banned':      data['is_banned'],
+        'time_of_day':    data['time_of_day'],
+        'requested_file': data['requested_file']
+    })
     db_conn.commit()
-
-def send_faildata(data,error_code,db_conn):
-    log_entry = (data['timestamp'],data['time_of_day'],data['requested_file'],error_code)
+    
+def send_faildata(data, error_code, db_conn):
     db_conn.execute(sqlalchemy.text("""
-            INSERT INTO errors
-              (timestamp, time_of_day, requested_file, error_code)
-            VALUES (%s, %s, %s, %s)
-        """), parameters=(log_entry))
+        INSERT INTO errors
+        (timestamp, time_of_day, requested_file, error_code)
+        VALUES (:timestamp, :time_of_day, :requested_file, :error_code)
+    """), {
+        'timestamp':      data['timestamp'],
+        'time_of_day':    data['time_of_day'],
+        'requested_file': data['requested_file'],
+        'error_code':     error_code
+    })
     db_conn.commit()
 
 @app.route('/', methods=['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH'])
