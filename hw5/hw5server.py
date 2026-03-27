@@ -59,7 +59,7 @@ pool = sqlalchemy.create_engine(
 print(f"Database connection pool created: {pool}")
 
 def get_headers(request):
-    timestamp = time.strftime('%Y-%m-%d %H:%M:%S'), #USE THIS AS PRIMARY KEY
+    timestamp = time.strftime('%Y-%m-%d %H:%M:%S') #USE THIS AS PRIMARY KEY
     tod = time.strftime('%H:%M:%S')
     client_ip = request.remote_addr
 
@@ -74,12 +74,12 @@ def get_headers(request):
         gender = ''
 
     try:
-        age = int(request.headers.get('X-age', 0))
+        age = int(request.headers.get('X-age', -1))
     except:
         age = -1
 
     try:
-        income = float(request.headers.get('X-income', 0))
+        income = float(request.headers.get('X-income', -1))
     except:
         income = -1
 
@@ -136,11 +136,10 @@ def process_request():
     print(f"Received {request.method} request at / endpoint")
     with pool.connect() as db_conn:
         print(f"Database connection acquired from pool: {db_conn}")
-
+        headers = get_headers(request)
+        print(f"Extracted headers: {headers}")
         if request.method == "GET":
             print("Processing GET request")
-            headers = get_headers(request)
-            print(f"Extracted headers: {headers}")
             country = request.headers.get('X-country') #I could extract the header using the function, but I'm scared of breaking things.
             if country in BANNED_COUNTRIES:
                 print(f"Country {country} is banned. Logging and returning 403.")
@@ -163,7 +162,7 @@ def process_request():
                 print("file parameter is not null")
                 blob = get_bucket().blob(name)
                 print(f"Blob: {blob}")
-                if blob.exists(timeout=10):
+                if blob.exists(timeout=5):
                     print(f"File {name} found in bucket. Logging request data and returning file content.")
                     send_requestdata(headers,db_conn)
                     print("Inserted request data into database")
@@ -179,7 +178,7 @@ def process_request():
             logging.error({'message':'Request for unimplemented function','method':request.method})
             send_faildata(headers,501,db_conn)
             print("Inserted error data into database for unimplemented method")
-            return "Not Implemented", 
+            return "Not Implemented", 501
 
 if __name__ == "__main__":
     print("Starting Flask application")
