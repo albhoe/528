@@ -10,6 +10,10 @@ import pymysql
 import socket, struct
 import sqlalchemy
 
+_storage_client = None
+_bucket = None
+
+
 PROJECT_ID = os.getenv('PROJECT_ID', 'bucsece528')
 INSTANCE_CONNECTION_NAME = os.getenv('INSTANCE_CONNECTION_NAME', 'bucsece528:us-east5:alhoe-hw5-mysqlinstance-b')
 DB_USER = os.getenv('DB_USER', 'root')
@@ -23,8 +27,14 @@ app = Flask(__name__)
 
 BANNED_COUNTRIES = ['North Korea', 'Iran', 'Cuba', 'Myanmar', 'Iraq', 'Libya', 'Sudan', 'Zimbabwe', 'Syria']
 
-storage_client = storage.Client(project=PROJECT_ID)
-bucket = storage_client.bucket('alhoe528hw2')
+
+def get_bucket():
+    global _storage_client, _bucket
+    if _bucket is None:
+        _storage_client = storage.Client(project=PROJECT_ID)
+        _bucket = _storage_client.bucket('alhoe528hw2')
+    return _bucket
+
 publisher = pubsub_v1.PublisherClient()
 topic_path = publisher.topic_path("bucsece528", "hw3topic")
 
@@ -39,13 +49,14 @@ def getconn():
       password=DB_PASS,
       db=DB_NAME
     )
-    print("Database connection established successfully")
+    print(f"Database connection established successfully: {conn}")
     return conn
 
 pool = sqlalchemy.create_engine(
     "mysql+pymysql://",
     creator=getconn,
 )
+print(f"Database connection pool created: {pool}")
 
 def get_headers(request):
     timestamp = time.strftime('%Y-%m-%d %H:%M:%S'), #USE THIS AS PRIMARY KEY
@@ -124,7 +135,7 @@ def send_faildata(data, error_code, db_conn):
 def process_request():
     print(f"Received {request.method} request at / endpoint")
     with pool.connect() as db_conn:
-        print("Connection to database established")
+        print(f"Database connection acquired from pool: {db_conn}")
 
         if request.method == "GET":
             print("Processing GET request")
@@ -145,18 +156,19 @@ def process_request():
                 send_faildata(headers,400,db_conn)
                 print("Inserted error data into database")
                 return 'Permission Denied', 400
-
+            print(f"Country {country} is not banned. Proceeding to check for requested file.")
             name = request.args.get('file')
+            print(f"Requested file: {name}")
             if name:
                 print("file parameter is not null")
-                blob = bucket.blob(name)
-                print(blob)
-                if blob.exists():
+                blob = get_bucket().blob(name)
+                print(f"Blob: {blob}")
+                if blob.exists(timeout=10):
                     print(f"File {name} found in bucket. Logging request data and returning file content.")
                     send_requestdata(headers,db_conn)
                     print("Inserted request data into database")
                     return blob.download_as_text(), 200
-                print(f"File {name} not found in bucket. Logging error and returning 404.")
+                print(f"File {name} not found in bucket or timed out. Logging error and returning 404.")
             else:
                 print("file parameter is null. Logging error and returning 404.")
             logging.error({"message": "File not found", "file": name})
