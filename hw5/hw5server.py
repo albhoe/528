@@ -59,6 +59,7 @@ pool = sqlalchemy.create_engine(
 print(f"Database connection pool created: {pool}")
 
 def get_headers(request):
+    start = time.perf_counter()
     timestamp = time.strftime('%Y-%m-%d %H:%M:%S') #USE THIS AS PRIMARY KEY
     tod = time.strftime('%H:%M:%S')
     client_ip = request.remote_addr
@@ -87,7 +88,8 @@ def get_headers(request):
         path = request.args.get('file')
     except: 
         path = ''
-
+    elapsed = time.perf_counter() - start
+    logging.info(f"[TIMING] Header extraction: {elapsed:.6f}s")
     return {
         'timestamp':      timestamp,
         'country':        country,
@@ -102,6 +104,7 @@ def get_headers(request):
 
 def send_requestdata(data, db_conn):
     print(f"Logging request data: {data}")
+    start = time.perf_counter()
     db_conn.execute(sqlalchemy.text("""
         INSERT INTO requests
         (timestamp, country, client_ip, gender, age, income, is_banned, time_of_day, requested_file)
@@ -118,6 +121,8 @@ def send_requestdata(data, db_conn):
         'requested_file': data['requested_file']
     })
     db_conn.commit()
+    elapsed = time.perf_counter() - start
+    logging.info(f"[TIMING] Database insert: {elapsed:.6f}s")
     
 def send_faildata(data, error_code, db_conn):
     print(f"Logging error with code {error_code} for request: {data}")
@@ -165,7 +170,10 @@ def process_request():
                 blob = get_bucket().blob(name)
                 print(f"Blob: {blob}")
                 try:
+                    start = time.perf_counter()
                     content = blob.download_as_text()
+                    elapsed = time.perf_counter() - start
+                    logging.info(f"[TIMING] File read from GCS: {elapsed:.6f}s")
                     print(f"File {name} found in bucket. Logging request data and returning content.")
                     send_requestdata(headers,db_conn)
                     print("Inserted request data into database")

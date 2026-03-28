@@ -9,6 +9,7 @@ fi
 python3 -m venv venv
 source venv/bin/activate
 
+
 apt-get update -y
 apt-get install -y python3-pip git wget
 
