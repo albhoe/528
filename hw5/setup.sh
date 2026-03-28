@@ -11,11 +11,6 @@ SQL_INSTANCE="alhoe-hw5-mysqlinstance-b"
 
 gcloud config set project $PROJECT_ID
 
-gcloud auth application-default login --quiet
-#pip3 install --break-system-packages pymysql
-#pip3 install --break-system-packages sqlalchemy
-#pip3 install --break-system-packages "cloud-sql-python-connector[pymysql]"
-
 PROJECT_ID=bucsece528
 DB_USER=root
 DB_PASS=''

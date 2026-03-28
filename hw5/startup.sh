@@ -6,10 +6,6 @@ if [ -f /var/log/startup_already_done ]; then
    exit 0
 fi
 
-python3 -m venv venv
-source venv/bin/activate
-
-
 apt-get update -y
 apt-get install -y python3-pip git wget
 

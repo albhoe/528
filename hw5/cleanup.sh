@@ -20,5 +20,3 @@ gcloud compute instances delete hw4-webserver --zone=$ZONE --quiet
 gcloud compute addresses delete webserver-ip \
     --region=$REGION \
     --quiet
-
-gcloud auth application-default revoke
