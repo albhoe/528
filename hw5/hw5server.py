@@ -15,6 +15,12 @@ _storage_client = None
 _bucket = None
 
 
+
+from google.colab import auth
+
+auth.authenticate_user()
+     
+
 PROJECT_ID = os.getenv('PROJECT_ID', 'bucsece528')
 INSTANCE_CONNECTION_NAME = os.getenv('INSTANCE_CONNECTION_NAME', 'bucsece528:us-east5:alhoe-hw5-mysqlinstance-b')
 DB_USER = os.getenv('DB_USER', 'root')
@@ -184,8 +190,9 @@ def process_request():
                     send_faildata(headers,404,db_conn)
                     return f"Not Found Error: {name} does not exist", 404
                 except Exception as e:
-                    print(f"Error downloading file {name}: {e}")
-                    logging.error(f"Error downloading file {name}: {e}")
+                    elapsed = time.perf_counter() - start
+                    print(f"Error downloading file {name} after {elapsed:.6f}s: {e}")
+                    logging.error(f"Error downloading file {name} after {elapsed:.6f}s: {e}")
                     return f"Error downloading file {name}", 500
             
             print("file parameter is null. Logging error and returning 404.")
