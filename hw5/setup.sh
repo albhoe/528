@@ -42,7 +42,7 @@ DB_EXISTS=$(gcloud sql databases list \
 if [ -z "$DB_EXISTS" ]; then
     echo "Starting Cloud SQL instance and creating schema..."
     gcloud sql instances patch $SQL_INSTANCE \
-        #--activation-policy=ALWAYS \
+        --activation-policy=ALWAYS \
         --authorized-networks=$STATIC_IP \
         --quiet \
         --project=$PROJECT_ID
