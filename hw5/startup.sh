@@ -6,6 +6,9 @@ if [ -f /var/log/startup_already_done ]; then
    exit 0
 fi
 
+python3 -m venv venv
+source venv/bin/activate
+
 apt-get update -y
 apt-get install -y python3-pip git wget
 
@@ -30,9 +33,11 @@ pip3 install --break-system-packages -r /opt/528/hw5/requirements.txt
 
 touch /var/log/startup_already_done
 
-nohup env PROJECT_ID=bucsece528 \
+nohup env GOOGLE_CLOUD_DISABLE_GRPC=true \
+           GCE_METADATA_IP=169.254.169.254 \
+           PROJECT_ID=bucsece528 \
            DB_USER=root \
            DB_PASS='' \
            DB_NAME=cs528-hw5-database \
            INSTANCE_CONNECTION_NAME=bucsece528:us-east5:alhoe-hw5-mysqlinstance-b \
-           python3 -u /opt/528/hw5/server.py > /root/server.log 2>&1 &
+           python3 -u /opt/528/hw5/hw5server.py > /root/server.log 2>&1 &
