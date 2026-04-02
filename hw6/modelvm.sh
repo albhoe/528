@@ -1,3 +1,5 @@
+#!/bin/bash
+
 exec > /var/log/startup-script.log 2>&1
 set -x
 
@@ -5,8 +7,9 @@ if [ -f /var/log/startup_already_done ]; then
    exit 0
 fi
 
-apt-get update -y
-apt-get install -y python3-pip git wget
+echo 'Acquire::ForceIPv4 "true";' | sudo tee /etc/apt/apt.conf.d/99force-ipv4
+sudo apt-get update
+sudo apt-get install -y python3-pip git wget
 
 #Connect to database programmatically
 wget https://dev.mysql.com/get/Downloads/MySQL-8.4/mysql-server_8.4.8-1debian13_amd64.deb-bundle.tar
