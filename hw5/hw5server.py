@@ -179,8 +179,8 @@ def process_request():
                     start = time.perf_counter()
                     content = blob.download_as_text()
                     elapsed = time.perf_counter() - start
-                    logging.info(f"[TIMING] File read from GCS: {elapsed:.6f}s")
                     print(f"File {name} found in bucket. Logging request data and returning content.")
+                    logging.info(f"[TIMING] File read from GCS: {elapsed:.6f}s")
                     send_requestdata(headers,db_conn)
                     print("Inserted request data into database")
                     return content, 200
