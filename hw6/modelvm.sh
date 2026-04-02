@@ -34,7 +34,7 @@ git --version
 wget https://dev.mysql.com/get/Downloads/MySQL-8.4/mysql-server_8.4.8-1debian13_amd64.deb-bundle.tar
 tar -xvf mysql-server_8.4.8-1debian13_amd64.deb-bundle.tar
 sudo apt-get install libaio1
-sudo dpkg-preconfigure mysql-community-server_*.deb
+#sudo dpkg-preconfigure mysql-community-server_*.deb
 sudo dpkg -i mysql*.deb
 sudo apt-get -f install
 
