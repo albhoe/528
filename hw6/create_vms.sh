@@ -1,13 +1,13 @@
 #!/bin/bash
 
 PROJECT_ID="bucsece528"
-REGION="us-east5"
+export REGION="us-east5"
 export ZONE="${REGION}-a"
 SQL_INSTANCE="alhoe-hw5-mysqlinstance"
 
 SERVICE_ACCOUNT="hw4-client-serviceaccount@${PROJECT_ID}.iam.gserviceaccount.com"
 SQL_INSTANCE="alhoe-hw5-mysqlinstance"
-INSTANCE_CONNECTION_NAME="${PROJECT_ID}:${REGION}:${SQL_INSTANCE}"
+INSTANCE_CONNECTION_NAME="${PROJECT_ID}:us-central1:${SQL_INSTANCE}"
 
 gcloud config set project $PROJECT_ID
 
