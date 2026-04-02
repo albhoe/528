@@ -8,8 +8,8 @@ import sqlalchemy
 
 PROJECT_ID = os.getenv("PROJECT_ID", "bucsece528")
 INSTANCE_CONNECTION_NAME = os.getenv("INSTANCE_CONNECTION_NAME", "bucsece528:us-east5:alhoe-hw5-mysqlinstance")
-DB_USER = os.getenv("DB_USER", "root")
-DB_PASS = os.getenv("DB_PASS", "")
+DB_USER = os.getenv("DB_USER", "albert")
+DB_PASS = os.getenv("DB_PASS", "pres1789")
 DB_NAME = os.getenv("DB_NAME", "528hwdatabase")
 
 connector = Connector()
@@ -36,3 +36,5 @@ with pool.connect() as db_conn:
     # show results
     for row in results:
         print(row)
+
+connector.close()
