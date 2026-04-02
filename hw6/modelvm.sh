@@ -29,11 +29,11 @@ pip3 install --break-system-packages -r /opt/528/hw6/requirements.txt
 
 touch /var/log/startup_already_done
 
-nohup env PROJECT_ID=$PROJECT_ID,\  
-    REGION=$REGION,\
-    ZONE=$ZONE,\
-    SQL_INSTANCE=$SQL_INSTANCE,\
-    SERVICE_ACCOUNT=$SERVICE_ACCOUNT,\
-    SQL_INSTANCE=$SQL_INSTANCE,\
-    INSTANCE_CONNECTION_NAME=$PROJECT_ID:$REGION:$SQL_INSTANCE"\
+nohup env PROJECT_ID="${PROJECT_ID:-bucsece528}",\  
+    REGION="${REGION:-us-east5}",\
+    ZONE="${ZONE:-$REGION-a}",\
+    SQL_INSTANCE="${SQL_INSTANCE:-alhoe-hw5-mysqlinstance}",\
+    SERVICE_ACCOUNT="${SERVICE_ACCOUNT:-hw4-client-serviceaccount@${PROJECT_ID}.iam.gserviceaccount.com}",\
+    SQL_INSTANCE="${SQL_INSTANCE:-alhoe-hw5-mysqlinstance}",\
+    INSTANCE_CONNECTION_NAME="${PROJECT_ID}:${REGION}:${SQL_INSTANCE}"\
     python3 -u /opt/528/hw6/model.py > /var/log/server.log 2>&1 &
