@@ -86,6 +86,6 @@ export PROJECT_ID REGION ZONE SQL_INSTANCE SERVICE_ACCOUNT INSTANCE_CONNECTION_N
  
 python3 -u /opt/528/hw6/model.py > /var/log/server.log 2>&1
 
-gcloud compute instances suspend hw6vm --zone=$ZONE --quiet
+gcloud compute instances delete hw6vm --zone=$ZONE --quiet
 
-echo "Full Run successful. Suspending the VM to save costs..."
+echo "Full Run successful. Deleting the VM"
