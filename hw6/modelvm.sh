@@ -54,6 +54,7 @@ pip3 install --break-system-packages sqlalchemy
 pip3 install --break-system-packages "cloud-sql-python-connector[pymysql]"
 
 gcloud config set project "bucsece528"
+gcloud config set auth/disable_ssl_validation True
 
 #Load files through GitHub
 git clone https://github.com/albhoe/528.git /opt/528
