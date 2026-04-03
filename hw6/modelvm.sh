@@ -7,6 +7,14 @@ if [ -f /var/log/startup_already_done ]; then
    exit 0
 fi
 
+
+ZONE="${ZONE:-${REGION}-a}"
+cleanup() {
+    gcloud compute instances delete hw6vm --zone=$ZONE --quiet
+}
+
+trap cleanup EXIT
+
 echo 'Acquire::ForceIPv4 "true";' | tee /etc/apt/apt.conf.d/99force-ipv4
 dpkg --configure -a
 apt --fix-broken install -y
@@ -52,11 +60,10 @@ touch /var/log/startup_already_done
 
 PROJECT_ID="${PROJECT_ID:-bucsece528}"
 REGION="${REGION:-us-east5}"
-ZONE="${ZONE:-${REGION}-a}"
 SQL_INSTANCE="${SQL_INSTANCE:-alhoe-hw5-mysqlinstance}"
 SERVICE_ACCOUNT="${SERVICE_ACCOUNT:-hw4-client-serviceaccount@${PROJECT_ID}.iam.gserviceaccount.com}"
 INSTANCE_CONNECTION_NAME="${PROJECT_ID}:us-central1:${SQL_INSTANCE}"
  
 export PROJECT_ID REGION ZONE SQL_INSTANCE SERVICE_ACCOUNT INSTANCE_CONNECTION_NAME
  
-nohup python3 -u /opt/528/hw6/model.py > /var/log/server.log 2>&1 &
+python3 -u /opt/528/hw6/model.py > /var/log/server.log 2>&1

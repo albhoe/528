@@ -12,6 +12,7 @@ INSTANCE_CONNECTION_NAME="${PROJECT_ID}:us-central1:${SQL_INSTANCE}"
 gcloud config set project $PROJECT_ID
 
 gcloud compute instances create hw6vm \
+    --preemptible \
     --zone=$ZONE \
     --machine-type=e2-micro \
     --service-account=$SERVICE_ACCOUNT \

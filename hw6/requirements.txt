@@ -4,3 +4,5 @@ grpcio==1.59.0
 google-cloud-storage
 google-cloud-logging
 flask
+pandas
+scikit-learn
