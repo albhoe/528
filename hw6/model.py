@@ -1,5 +1,6 @@
 print("Hello, World!")
 
+import logging
 from google.cloud import storage
 import os
 import sys
@@ -66,27 +67,35 @@ connector.close()
 
 print("Data Aquired. Database connection closed successfully.")
 
+X = country_dataframe.drop(columns=["country"])
+y = country_dataframe["country"]
+
+X_train, X_test, y_train, y_test = train_test_split(
+X, y, test_size=0.1, random_state=42)
 
 def predict_country(client_ip):
     client_ip_first = client_ip.split('.')[0]
     client_ip_prefix = '.'.join(client_ip.split('.')[:2])
-    if client_ip_prefix in country_dataframe['client_ip_2'].values:
-        country = country_dataframe[country_dataframe['client_ip_2'] == client_ip_prefix]['country'].values[0]
-    elif client_ip_first in country_dataframe['client_ip_1'].values:
-        country = country_dataframe[country_dataframe['client_ip_1'] == client_ip_first]['country'].values[0]
+    if client_ip_prefix in X_train['client_ip_2'].values:
+        country = y_train[X_train['client_ip_2'] == client_ip_prefix].values[0]
+    elif client_ip_first in X_train['client_ip_1'].values:
+        country = y_train[X_train['client_ip_1'] == client_ip_first].values[0]
     return country
 
-test_data = country_dataframe.drop(columns=['client_ip_1', 'client_ip_2'], inplace=True)
-predictions = country_dataframe['client_ip'].apply(predict_country)
-accuracy = (predictions == test_data['country']).mean()
+X_test.drop(columns=['client_ip_1', 'client_ip_2'], inplace=True)
+predictions = X_test['client_ip'].apply(predict_country)
+accuracy = (predictions == y_test).mean()
 print(f"Country Prediction Accuracy: {accuracy:.2%}")
-test_data['predicted_country'] = predictions
-test_data = test_data[['client_ip','country','predicted_country']]
-print(test_data.head())
-
+X_test['predicted_country'] = predictions
+X_test['country'] = y_test
+test_data = X_test[['client_ip','country','predicted_country']]
+print(test_data)
 test_data.to_csv(f'country_prediction_{accuracy}.csv', index=False)
 
-storage.Client(project=PROJECT_ID).bucket('alhoe528hw2').blob(f'/hw6/country_prediction_{accuracy}.csv').upload_from_filename(f'country_prediction_{accuracy}.csv')
+try:
+    storage.Client(project=PROJECT_ID).bucket('alhoe528hw2').blob(f'/hw6/country_prediction_{accuracy}.csv').upload_from_filename(f'country_prediction_{accuracy}.csv')
+except Exception as e:
+    logging.error(f"Error uploading country prediction results to Cloud Storage: {e}")
 
 def income_2_scalar(income):
     match income:
@@ -140,20 +149,17 @@ def predict_income():
     test_data["gender"] = le.fit_transform(test_data["gender"])
     test_data["income"] = test_data["income"].apply(income_2_scalar)
     test_data = pandas.get_dummies(test_data, columns=["country"])
-    print(test_data.columns)
 
     X = test_data.drop(columns=["income"])
     y = test_data["income"]
 
     X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
+    X, y, test_size=0.1, random_state=42
     )
 
     models = {
     "Naive Bayes":       GaussianNB(),
-    "MLP":               MLPClassifier(hidden_layer_sizes=(64, 32), random_state=42),
-    "Random Forest":     RandomForestClassifier(random_state=42),
-    "Logistic Regression": LogisticRegression(random_state=42)
+    "Random Forest":     RandomForestClassifier(random_state=42)
     }
 
     max_acc = 0
@@ -163,12 +169,13 @@ def predict_income():
         acc = accuracy_score(y_test, model.predict(X_test))
         if acc > max_acc:
             max_acc = acc
+        test_data[f'{name}_predicted_income'] = model.predict(X).round()
+        test_data[f'{name}_predicted_income'] = test_data[f'{name}_predicted_income'].apply(scalar_2_income)
         print(f"{name:25s} accuracy: {acc:.2f}")
 
-    y = y.apply(scalar_2_income)
+    y_train = y_train.apply(income_2_scalar)
 
-    models = {"MLP Regression" : MLPRegressor(hidden_layer_sizes=(64, 32), random_state=42),
-              "Linear Regression" : LinearRegression()
+    models = {"MLP Regression" : MLPRegressor(hidden_layer_sizes=(64, 32), random_state=42)
               }
     
     for name, model in models.items():
@@ -177,12 +184,20 @@ def predict_income():
         if acc > max_acc:
             max_acc = acc
         test_data[f'{name}_predicted_income'] = model.predict(X).round()
+        test_data[f'{name}_predicted_income'] = test_data[f'{name}_predicted_income'].apply(scalar_2_income)
         print(f"{name:25s} accuracy: {acc:.2f}")
 
-test_data.to_csv(f'income_prediction_{accuracy}.csv', index=False)
+    test_data['income'] = y.apply(scalar_2_income)
+    test_data = test_data[['income','Random Forest_predicted_income']]
+    print(test_data)
+    test_data.to_csv(f'income_prediction_{max_acc}.csv', index=False)
+    return max_acc
 
-storage.Client(project=PROJECT_ID).bucket('alhoe528hw2').blob(f'/hw6/income_prediction_{accuracy}.csv').upload_from_filename(f'income_prediction_{accuracy}.csv')
+max_acc = predict_income()
 
-predict_income()
+try:
+    storage.Client(project=PROJECT_ID).bucket('alhoe528hw2').blob(f'/hw6/income_prediction_{max_acc}.csv').upload_from_filename(f'income_prediction_{max_acc}.csv')
+except Exception as e:
+    logging.error(f"Error uploading income prediction results to Cloud Storage: {e}")
 
 sys.exit(0)
