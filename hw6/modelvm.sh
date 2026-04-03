@@ -56,9 +56,22 @@ pip3 install --break-system-packages "cloud-sql-python-connector[pymysql]"
 gcloud config set project "bucsece528"
 gcloud config set auth/disable_ssl_validation True
 
+gcloud components update -y
+apt install python3-certifi
+
+set VERIFY_SSL_CERTS=false
+set COLLECT_ANALYTICS=False
+set SENTRY_DSN=''
+set FRONTEND_SENTRY_DSN=label-studio start
+export GRPC_DEFAULT_SSL_ROOTS_FILE_PATH=/etc/ssl/certs/ca-certificates.crt
+
 #Load files through GitHub
 git clone https://github.com/albhoe/528.git /opt/528
 pip3 install --break-system-packages -r /opt/528/hw6/requirements.txt
+
+
+sudo apt-get install -y ca-certificates
+sudo update-ca-certificates
 
 touch /var/log/startup_already_done
 

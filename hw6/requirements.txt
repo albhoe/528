@@ -1,8 +1,11 @@
 functions-framework==3.*
-google-cloud-pubsub==2.18.0
-grpcio==1.59.0
+google-cloud-pubsub>=2.20.0
+grpcio>=1.62.0
 google-cloud-storage
 google-cloud-logging
 flask
 pandas
 scikit-learn
+certifi>=2024.0.0
+requests>=2.31.0
+urllib3>=2.0.0
