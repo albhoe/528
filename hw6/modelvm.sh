@@ -8,7 +8,7 @@ if [ -f /var/log/startup_already_done ]; then
 fi
 
 
-ZONE="${ZONE:-${REGION}-a}"
+ZONE="${ZONE:-${REGION:-us-east5}-a}"
 cleanup() {
    echo "Exit called. Cleaning up resources..."
    gcloud compute instances delete hw6vm --zone=$ZONE --quiet
