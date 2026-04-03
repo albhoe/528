@@ -58,7 +58,8 @@ with pool.connect() as db_conn:
     country_dataframe = pandas.DataFrame(country_data)
 
     #Income Prediction
-    income_data = db_conn.execute(sqlalchemy.text("SELECT DISTINCT `income`,`country`,`gender`,`is_banned`,`time_of_day` FROM request_logs")).fetchall()
+    income_data = db_conn.execute(sqlalchemy.text("SELECT DISTINCT `income`,`country`,`gender`,`is_banned`,`time_of_day` " \
+    "FROM request_logs")).fetchall()
 
 
 connector.close()
@@ -75,7 +76,7 @@ def predict_country(client_ip):
         country = country_dataframe[country_dataframe['client_ip_1'] == client_ip_first]['country'].values[0]
     return country
 
-test_data = country_dataframe.sample(100,random_state=42)
+test_data = country_dataframe.drop(columns=['client_ip_1', 'client_ip_2'], inplace=True)
 predictions = test_data['client_ip'].apply(predict_country)
 accuracy = (predictions == test_data['country']).mean()
 print(f"Country Prediction Accuracy: {accuracy:.2%}")
@@ -85,7 +86,7 @@ print(test_data.head())
 
 test_data.to_csv(f'country_prediction_{accuracy}.csv', index=False)
 
-storage.Client(project=PROJECT_ID).bucket('alhoe528hw2').blob(f'/hw6/country_prediction_{accuracy}.csv').upload_from_filename(f'/country_prediction_{accuracy}.csv')
+storage.Client(project=PROJECT_ID).bucket('alhoe528hw2').blob(f'/hw6/country_prediction_{accuracy}.csv').upload_from_filename(f'country_prediction_{accuracy}.csv')
 
 def income_2_scalar(income):
     match income:
@@ -130,8 +131,7 @@ def time_to_int(time_str):
     return h * 3600 + m * 60 + s
 
 def predict_income():
-    test_data = pandas.DataFrame(income_data)
-    test_data = test_data.sample(10000, random_state=42)
+    test_data = pandas.DataFrame(income_data).dropna()
     le = LabelEncoder()
     test_data["time_of_day"] = test_data["time_of_day"].apply(time_to_int)
     test_data["minute"] = test_data["time_of_day"] // 60
@@ -181,7 +181,7 @@ def predict_income():
 
 test_data.to_csv(f'income_prediction_{accuracy}.csv', index=False)
 
-storage.Client(project=PROJECT_ID).bucket('alhoe528hw2').blob(f'/hw6/income_prediction_{accuracy}.csv').upload_from_filename(f'/income_prediction_{accuracy}.csv')
+storage.Client(project=PROJECT_ID).bucket('alhoe528hw2').blob(f'/hw6/income_prediction_{accuracy}.csv').upload_from_filename(f'income_prediction_{accuracy}.csv')
 
 predict_income()
 
