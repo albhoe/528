@@ -10,7 +10,8 @@ fi
 
 ZONE="${ZONE:-${REGION}-a}"
 cleanup() {
-    gcloud compute instances delete hw6vm --zone=$ZONE --quiet
+   echo "Exit called. Cleaning up resources..."
+   gcloud compute instances delete hw6vm --zone=$ZONE --quiet
 }
 
 trap cleanup EXIT
