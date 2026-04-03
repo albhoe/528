@@ -83,9 +83,9 @@ test_data['predicted_country'] = predictions
 test_data = test_data[['client_ip','country','predicted_country']]
 print(test_data.head())
 
-#test_data.to_csv(f'country_prediction_{accuracy}.csv', index=False)
+test_data.to_csv(f'country_prediction_{accuracy}.csv', index=False)
 
-#storage.Client(project=PROJECT_ID).bucket('alhoe528hw2').blob('/hw6/country_prediction.csv').upload_from_filename(f'/country_prediction_{accuracy}.csv')
+storage.Client(project=PROJECT_ID).bucket('alhoe528hw2').blob('/hw6/country_prediction.csv').upload_from_filename(f'/country_prediction_{accuracy}.csv')
 
 def income_2_scalar(income):
     match income:
@@ -170,10 +170,12 @@ def predict_income():
     for name, model in models.items():
         model.fit(X_train, y_train)
         acc = accuracy_score(y_test, model.predict(X_test).round())
+        test_data[f'{name}_predicted_income'] = model.predict(X).round()
         print(f"{name:25s} accuracy: {acc:.2f}")
 
+test_data.to_csv(f'country_prediction_{accuracy}.csv', index=False)
 
-#storage.Client(project=PROJECT_ID).bucket('alhoe528hw2').blob('/hw6/income_prediction.csv').upload_from_filename(f'/income_prediction_{accuracy}.csv')
+storage.Client(project=PROJECT_ID).bucket('alhoe528hw2').blob('/hw6/income_prediction.csv').upload_from_filename(f'/income_prediction_{accuracy}.csv')
 
 predict_income()
 
