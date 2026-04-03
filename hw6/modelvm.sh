@@ -11,7 +11,7 @@ fi
 ZONE="${ZONE:-${REGION:-us-east5}-a}"
 cleanup() {
    echo "Exit called. Cleaning up resources..."
-   gcloud compute instances delete hw6vm --zone=$ZONE --quiet
+   gcloud compute instances suspend hw6vm --zone=$ZONE --quiet
    #gcloud sql instances patch $SQL_INSTANCE --activation-policy=NEVER --quiet --project=$PROJECT_ID
 
 }
