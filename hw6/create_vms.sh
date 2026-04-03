@@ -9,7 +9,7 @@ INSTANCE_CONNECTION_NAME="${PROJECT_ID}:us-central1:${SQL_INSTANCE}"
 
 gcloud config set project $PROJECT_ID
 
-#gcloud sql instances patch $SQL_INSTANCE --activation-policy=ALWAYS --quiet --project=$PROJECT_ID
+gcloud sql instances patch $SQL_INSTANCE --activation-policy=ALWAYS --quiet --project=$PROJECT_ID
 
 gcloud compute instances create hw6vm \
     --preemptible \
