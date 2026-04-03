@@ -56,8 +56,9 @@ pip3 install --break-system-packages "cloud-sql-python-connector[pymysql]"
 gcloud config set project "bucsece528"
 gcloud config set auth/disable_ssl_validation True
 
-gcloud components update
-apt install python3-certifi
+#sudo apt-get update && sudo apt-get --only-upgrade install google-cloud-cli-cloud-run-proxy google-cloud-cli-minikube google-cloud-cli-enterprise-certificate-proxy google-cloud-cli-kubectl-oidc google-cloud-cli-app-engine-python google-cloud-cli-sbom-extractor google-cloud-cli-istioctl google-cloud-cli google-cloud-cli-cbt google-cloud-cli-app-engine-go google-cloud-cli-gke-gcloud-auth-plugin google-cloud-cli-config-connector google-cloud-cli-anthoscli google-cloud-cli-docker-credential-gcr google-cloud-cli-log-streaming google-cloud-cli-nomos kubectl google-cloud-cli-package-go-module google-cloud-cli-spanner-migration-tool google-cloud-cli-anthos-auth google-cloud-cli-datastore-emulator google-cloud-cli-pubsub-emulator google-cloud-cli-cloud-build-local google-cloud-cli-local-extract google-cloud-cli-bigtable-emulator google-cloud-cli-skaffold google-cloud-cli-managed-flink-client google-cloud-cli-app-engine-python-extras google-cloud-cli-app-engine-java google-cloud-cli-spanner-cli google-cloud-cli-spanner-emulator google-cloud-cli-run-compose google-cloud-cli-terraform-tools google-cloud-cli-firestore-emulator google-cloud-cli-app-engine-grpc google-cloud-cli-kpt
+
+#apt install python3-certifi
 
 set VERIFY_SSL_CERTS=false
 set COLLECT_ANALYTICS=False
@@ -70,8 +71,8 @@ git clone https://github.com/albhoe/528.git /opt/528
 pip3 install --break-system-packages -r /opt/528/hw6/requirements.txt
 
 
-sudo apt-get install -y ca-certificates
-sudo update-ca-certificates
+#sudo apt-get install -y ca-certificates
+#sudo update-ca-certificates
 
 touch /var/log/startup_already_done
 
