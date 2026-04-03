@@ -158,39 +158,41 @@ def predict_income():
     )
 
     models = {
-    "Naive Bayes":       GaussianNB(),
+    #"Naive Bayes":       GaussianNB(),
     "Random Forest":     RandomForestClassifier(random_state=42)
     }
 
     max_acc = 0
 
+    test_data = X_test.copy()
+
     for name, model in models.items():
         model.fit(X_train, y_train)
-        acc = accuracy_score(y_test, model.predict(X_test))
+        test_data[f'{name}_predicted_income'] = model.predict(X_test).round()
+        acc = accuracy_score(y_test, test_data[f'{name}_predicted_income'])
         if acc > max_acc:
             max_acc = acc
-        test_data[f'{name}_predicted_income'] = model.predict(X).round()
         test_data[f'{name}_predicted_income'] = test_data[f'{name}_predicted_income'].apply(scalar_2_income)
         print(f"{name:25s} accuracy: {acc:.2f}")
 
     y_train = y_train.copy().apply(income_2_scalar)
 
-    models = {"MLP Regression" : MLPRegressor(hidden_layer_sizes=(64, 32), random_state=42)
+    models = {#"MLP Regression" : MLPRegressor(hidden_layer_sizes=(64, 32), random_state=42)
               }
     
     for name, model in models.items():
         try:
             model.fit(X_train, y_train)
-            acc = accuracy_score(y_test, model.predict(X_test).round())
+            test_data[f'{name}_predicted_income'] = model.predict(X_test).round()
+            acc = accuracy_score(y_test, test_data[f'{name}_predicted_income'])
             if acc > max_acc:
                 max_acc = acc
-            test_data[f'{name}_predicted_income'] = model.predict(X).round()
             test_data[f'{name}_predicted_income'] = test_data[f'{name}_predicted_income'].apply(scalar_2_income)
             print(f"{name:25s} accuracy: {acc:.2f}")
         except Exception as e:
             logging.error(f"Error training {name} model: {e}")
 
-    test_data['income'] = y
+    test_data['income'] = y_test.apply(scalar_2_income)
     test_data = test_data[['income','Random Forest_predicted_income']]
     print(test_data)
     try:
