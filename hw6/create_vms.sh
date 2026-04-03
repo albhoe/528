@@ -14,7 +14,7 @@ gcloud config set project $PROJECT_ID
 gcloud compute instances create hw6vm \
     --preemptible \
     --zone=$ZONE \
-    --machine-type=e2-micro \
+    --machine-type=e2-small \
     --service-account=$SERVICE_ACCOUNT \
     --scopes=cloud-platform \
     --tags=hw4-webserver \
