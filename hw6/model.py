@@ -77,7 +77,7 @@ def predict_country(client_ip):
     return country
 
 test_data = country_dataframe.drop(columns=['client_ip_1', 'client_ip_2'], inplace=True)
-predictions = test_data['client_ip'].apply(predict_country)
+predictions = country_dataframe['client_ip'].apply(predict_country)
 accuracy = (predictions == test_data['country']).mean()
 print(f"Country Prediction Accuracy: {accuracy:.2%}")
 test_data['predicted_country'] = predictions
