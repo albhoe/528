@@ -4,17 +4,17 @@ PROJECT_ID="bucsece528"
 export REGION="us-east5"
 export ZONE="${REGION}-a"
 SQL_INSTANCE="alhoe-hw5-mysqlinstance"
-
 SERVICE_ACCOUNT="hw4-client-serviceaccount@${PROJECT_ID}.iam.gserviceaccount.com"
-SQL_INSTANCE="alhoe-hw5-mysqlinstance"
 INSTANCE_CONNECTION_NAME="${PROJECT_ID}:us-central1:${SQL_INSTANCE}"
 
 gcloud config set project $PROJECT_ID
 
+#gcloud sql instances patch $SQL_INSTANCE --activation-policy=ALWAYS --quiet --project=$PROJECT_ID
+
 gcloud compute instances create hw6vm \
     --preemptible \
     --zone=$ZONE \
-    --machine-type=e2-micro \
+    --machine-type=e2-small \
     --service-account=$SERVICE_ACCOUNT \
     --scopes=cloud-platform \
     --tags=hw4-webserver \

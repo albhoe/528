@@ -12,6 +12,8 @@ ZONE="${ZONE:-${REGION}-a}"
 cleanup() {
    echo "Exit called. Cleaning up resources..."
    gcloud compute instances delete hw6vm --zone=$ZONE --quiet
+   #gcloud sql instances patch $SQL_INSTANCE --activation-policy=NEVER --quiet --project=$PROJECT_ID
+
 }
 
 trap cleanup EXIT
