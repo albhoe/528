@@ -9,11 +9,11 @@ fi
 
 
 ZONE="${ZONE:-${REGION:-us-east5}-a}"
+
 cleanup() {
-   echo "Exit called. Cleaning up resources..."
+   echo "Exit Called. Cleaning up resources..."
    gcloud compute instances suspend hw6vm --zone=$ZONE --quiet
    #gcloud sql instances patch $SQL_INSTANCE --activation-policy=NEVER --quiet --project=$PROJECT_ID
-
 }
 
 trap cleanup EXIT
@@ -56,7 +56,7 @@ pip3 install --break-system-packages "cloud-sql-python-connector[pymysql]"
 gcloud config set project "bucsece528"
 gcloud config set auth/disable_ssl_validation True
 
-gcloud components update -y
+gcloud components update
 apt install python3-certifi
 
 set VERIFY_SSL_CERTS=false
@@ -84,3 +84,7 @@ INSTANCE_CONNECTION_NAME="${PROJECT_ID}:us-central1:${SQL_INSTANCE}"
 export PROJECT_ID REGION ZONE SQL_INSTANCE SERVICE_ACCOUNT INSTANCE_CONNECTION_NAME
  
 python3 -u /opt/528/hw6/model.py > /var/log/server.log 2>&1
+
+gcloud compute instances suspend hw6vm --zone=$ZONE --quiet
+
+echo "Full Run successful. Suspending the VM to save costs..."
