@@ -14,6 +14,5 @@ gcloud compute instances create testvm \
     --service-account=$SERVICE_ACCOUNT \
     --scopes=cloud-platform \
     --tags=test-tag \
-    --metadata PROJECT_ID=$PROJECT_ID \
     --metadata-from-file=startup-script=startup.sh \
     --project=$PROJECT_ID

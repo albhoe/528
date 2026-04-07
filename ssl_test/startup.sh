@@ -2,6 +2,8 @@
 
 exec > /var/log/startup-script.log 2>&1
 
+PROJECT_ID="bucsece528"
+
 apt-get update -y
 apt-get install -y python3-pip git
 git clone https://github.com/albhoe/528.git /opt/528
