@@ -10,7 +10,6 @@ SERVICE_ACCOUNT="ssl-test-serviceaccount@${PROJECT_ID}.iam.gserviceaccount.com"
 gcloud config set project $PROJECT_ID
 
 gcloud compute instances create testvm \
-    --preemptible \
     --zone=$ZONE \
     --machine-type=e2-small \
     --service-account=$SERVICE_ACCOUNT \
