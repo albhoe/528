@@ -1,4 +1,5 @@
 #!/bin/bash
+
 exec > /var/log/startup-script.log 2>&1
 
 apt-get update -y
