@@ -5,4 +5,4 @@ apt-get update -y
 apt-get install -y python3-pip git
 git clone https://github.com/albhoe/528.git /opt/528
 pip3 install --break-system-packages -r /opt/528/ssl_test/requirements.txt
-nohup python3 /opt/528/ssl_test/server.py > /root/server.log 2>&1 &
+nohup python3 /opt/528/ssl_test/output.py > /root/server.log 2>&1 &
