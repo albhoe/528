@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 PROJECT_ID="bucsece528"
 export REGION="us-east5"
 export ZONE="${REGION}-c"
