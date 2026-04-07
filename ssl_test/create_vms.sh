@@ -3,7 +3,7 @@
 PROJECT_ID="bucsece528"
 export REGION="us-east5"
 export ZONE="${REGION}-c"
-SERVICE_ACCOUNT="ssl_test_serviceaccount@${PROJECT_ID}.iam.gserviceaccount.com"
+SERVICE_ACCOUNT="ssl-test-serviceaccount@${PROJECT_ID}.iam.gserviceaccount.com"
 
 gcloud config set project $PROJECT_ID
 
