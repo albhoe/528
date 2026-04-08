@@ -18,4 +18,4 @@ source /opt/venv/bin/activate
 pip install -r /opt/528/ssl_test/requirements.txt
 
 # Run the script using the venv python
-nohup /opt/venv/bin/python3 /opt/528/ssl_test/output.py > /var/log/server.log 2>&1 &
+nohup /opt/venv/bin/python3 /opt/528/ssl_test/output.py > /var/log/output.log 2>&1 &
