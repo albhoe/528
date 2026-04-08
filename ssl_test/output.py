@@ -5,7 +5,7 @@ bucket_name="alhoe528hw2"
 blob_name="test"
 
 
-client = storage.Client(project='bucsece528')
+client = storage.Client()
 bucket = client.bucket('alhoe528hw2')
 blob = bucket.blob(blob_name)
 blob.upload_from_string('Hello, world!')
