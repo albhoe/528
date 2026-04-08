@@ -12,7 +12,7 @@ gcloud config set project $PROJECT_ID
 gcloud compute instances create testvm \
     --zone=$ZONE \
     --machine-type=e2-small \
-    #--service-account=$SERVICE_ACCOUNT \
+    --service-account=$SERVICE_ACCOUNT \
     --scopes=cloud-platform \
     --tags=test-tag \
     --metadata-from-file=startup-script=startup.sh \
