@@ -1,6 +1,7 @@
 import argparse
 import logging
 import re
+import time
 
 import apache_beam as beam
 from apache_beam.io import ReadAllFromText
@@ -20,21 +21,21 @@ def get_link_destinations(line):
   return result
 
 def main(argv=None, save_main_session=True):
-  """Main entry point; defines and runs the wordcount pipeline."""
+    """Main entry point; defines and runs the wordcount pipeline."""
 
-  parser = argparse.ArgumentParser()
-  parser.add_argument(
-      '--input',
-      dest='input',
-      default='gs://alhoe528hw2/files/*.txt',
-      help='Input file to process.')
-  parser.add_argument(
-      '--output',
-      dest='output',
-      # CHANGE 1/6: (OPTIONAL) The Google Cloud Storage path is required
-      # for outputting the results.
-      default='gs://alhoe528hw2/hw7/output/*.txt',
-      help='Output file to write results to.')
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--input',
+        dest='input',
+        default='gs://alhoe528hw2/files/*.txt',
+        help='Input file to process.')
+    parser.add_argument(
+        '--output',
+        dest='output',
+        # CHANGE 1/6: (OPTIONAL) The Google Cloud Storage path is required
+        # for outputting the results.
+        default='gs://alhoe528hw2/hw7/output/*.txt',
+        help='Output file to write results to.')
 
   # If you use DataflowRunner, below options can be passed:
   #   CHANGE 2/6: (OPTIONAL) Change this to DataflowRunner to
@@ -54,44 +55,54 @@ def main(argv=None, save_main_session=True):
   #   files.
   #   '--temp_location=gs://YOUR_BUCKET_NAME/AND_TEMP_DIRECTORY',
   #   '--job_name=your-wordcount-job',
-  known_args, pipeline_args = parser.parse_known_args(argv)
+    known_args, pipeline_args = parser.parse_known_args(argv)
 
-  options = PipelineOptions(
-    runner='DataflowRunner',
-    project='bucsece528',
-    region='us-south1',
-    temp_location='gs://alhoe528hw2/temp',
-    auto_unique_labels=True
-)
+    options = PipelineOptions(
+        runner='DataflowRunner',
+        project='bucsece528',
+        region='us-south1',
+        temp_location='gs://alhoe528hw2/temp',
+        auto_unique_labels=True
+    )
+    start_time = time.time()
+    with beam.Pipeline(options=options) as p:
 
-  # We use the save_main_session option because one or more DoFn's in this
-  # workflow rely on global context (e.g., a module imported at module level).
-  #pipeline_options = PipelineOptions(pipeline_args)
-  options.view_as(SetupOptions).save_main_session = save_main_session
-  with beam.Pipeline(options=options) as p:
+        lines = p | beam.Create(['gs://alhoe528hw2/files/*00.html']) | ReadAllFromText(with_filename=True)
 
-    lines = p | beam.Create(['gs://alhoe528hw2/files/*42.html']) | ReadAllFromText(with_filename=True)
-
-    outgoing = (
-        lines
-           | 'Links' >> (
+        outgoing = (
+            lines
+            | 'Links' >> (
             beam.Map(
-                lambda x: (x[0], len(re.findall(r'<a HREF="(\d+).html"> This is a link </a>', x[1])))))
+                lambda x: (x[0], len(re.findall(r'<a HREF="(\d+.html)"> This is a link </a>', x[1])))))
             | 'SumByFile' >> beam.CombinePerKey(sum)
             | 'Top5outgoing' >> beam.combiners.Top.Of(5,key=lambda x: x[1])
             )
-    # Format the counts into a PCollection of strings.
-    #def format_result(word_count):
-    #  (word, count) = word_count
-    #  return '%s: %s' % (word, count)
+    
+        incoming = (
+            lines 
+            | 'Destinations' >> (
+                beam.FlatMap(
+                  lambda x: re.findall(r'<a HREF="(\d+.html)"> This is a link </a>', x[1]))
+            )
+            | 'SumByDestination' >> beam.combiners.Count.PerElement()
+            | 'Top5incoming' >> beam.combiners.Top.Of(5,key=lambda x: x[1])
+            )
 
-    #output = counts | 'Format' >> beam.Map(format_result)
+        bigrams = (
+        lines | 'Bigrams' >> (
+            beam.FlatMap(
+            lambda x: zip(x[1].split(),x[1].split()[1:]))
+            | 'SumByBigram' >> beam.combiners.Count.PerElement()
+            | 'Top5bigrams' >> beam.combiners.Top.Of(5,key=lambda x: x[1])
+        )
+        )
 
-    # Write the output using a "Write" transform that has side effects.
-    # pylint: disable=expression-not-assigned
-    outgoing | WriteToText('gs://alhoe528hw2/hw7/outgoing.txt')
-    #incoming | WriteToText('gs://alhoe528hw2/hw7/incoming.txt')
-
+        # Write the output using a "Write" transform that has side effects.
+        # pylint: disable=expression-not-assigned
+        outgoing | WriteToText('gs://alhoe528hw2/hw7/outgoinglocal.txt')
+        incoming | WriteToText('gs://alhoe528hw2/hw7/incominglocal.txt')
+        bigrams | WriteToText('gs://alhoe528hw2/hw7/bigramslocal.txt')
+    print(f"Execution time: {time.time() - start_time} seconds")
 
 if __name__ == '__main__':
   logging.getLogger().setLevel(logging.INFO)
