@@ -18,7 +18,7 @@ gcloud compute instances create testvm1 \
     --machine-type=e2-small \
     --service-account=$SERVICE_ACCOUNT \
     --scopes=cloud-platform \
-    --tags=test-tag \
+    --tags=hw4-webserver \
     --metadata-from-file=startup-script=startup1.sh \
     --project=$PROJECT_ID
 
@@ -27,6 +27,6 @@ gcloud compute instances create testvm2 \
     --machine-type=e2-small \
     --service-account=$SERVICE_ACCOUNT \
     --scopes=cloud-platform \
-    --tags=test-tag \
+    --tags=hw4-forbidden \
     --metadata-from-file=startup-script=startup2.sh \
     --project=$PROJECT_ID
