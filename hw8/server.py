@@ -2,7 +2,7 @@ from google.cloud import storage
 
 project_id="bucsece528"
 bucket_name="alhoe528hw2"
-blob_name="test"
+blob_name="server_test"
 
 
 client = storage.Client(project=project_id)
