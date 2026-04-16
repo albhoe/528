@@ -8,13 +8,12 @@ update-ca-certificates
 apt-get install -y ntpdate
 ntpdate -u pool.ntp.org
 
-ZONE="us-south1-a"
+ZONE2="us-south1-b"
 PROJECT_ID="bucsece528"
-SQL_INSTANCE="hw6sql"
 
 cleanup() {
    echo "Exit Called. Cleaning up resources..."
-   #gcloud compute instances suspend hw6vm --zone=$ZONE --quiet
+   gcloud compute instances suspend testvm2 --zone=$ZONE2 --quiet
    #gcloud sql instances patch $SQL_INSTANCE --activation-policy=NEVER --quiet --project=$PROJECT_ID
 }
 
