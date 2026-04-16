@@ -12,6 +12,15 @@ gcloud config set project $PROJECT_ID
 
 gcloud compute instances delete testvm1 --zone=$ZONE1 --quiet || true
 gcloud compute instances delete testvm2 --zone=$ZONE2 --quiet || true
+gcloud compute target-pools remove-instances cs528-pool \
+    --instances testvm1 \
+    --zone $ZONE1 \
+    || true
+gcloud compute target-pools remove-instances cs528-pool \
+    --instances testvm2 \
+    --zone $ZONE2 \
+    || true
+
 
 gcloud compute instances create testvm1 \
     --zone=$ZONE1 \
@@ -27,6 +36,15 @@ gcloud compute instances create testvm2 \
     --machine-type=e2-small \
     --service-account=$SERVICE_ACCOUNT \
     --scopes=cloud-platform \
-    --tags=hw4-forbidden \
-    --metadata-from-file=startup-script=startup2.sh \
+    --tags=hw4-webserver \
+    --metadata-from-file=startup-script=startup1.sh \
     --project=$PROJECT_ID
+
+
+gcloud compute target-pools add-instances cs528-pool \
+    --instances testvm1 \
+    --zone $ZONE1 \
+
+gcloud compute target-pools add-instances cs528-pool \
+    --instances testvm2 \
+    --zone $ZONE2 \
