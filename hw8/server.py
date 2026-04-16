@@ -20,11 +20,11 @@ client = google.cloud.logging.Client()
 client.setup_logging()
 import requests
 
-metadata_url = "http://google.internal"
+zone_url = "http://metadata.google.internal/computeMetadata/v1/instance/zone"
 headers = {"Metadata-Flavor": "Google"}
 
 try:
-    response = requests.get(metadata_url, headers=headers, timeout=5)
+    response = requests.get(zone_url, headers=headers, timeout=5)
     response.raise_for_status()
     full_zone = response.text
     print(full_zone)
