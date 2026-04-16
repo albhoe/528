@@ -1,4 +1,3 @@
-from aiohttp import request
 from google.cloud import storage
 
 project_id="bucsece528"
