@@ -11,10 +11,10 @@ SERVICE_ACCOUNT="ssl-test-serviceaccount@${PROJECT_ID}.iam.gserviceaccount.com"
 gcloud config set project $PROJECT_ID
 
 gcloud compute instance-groups unmanaged remove-instances hw8-ig1 \
-    --instances=testvm1 --zone=$ZONE1
+    --instances=testvm1 --zone=$ZONE1 --quiet || true
 
 gcloud compute instance-groups unmanaged remove-instances hw8-ig2 \
-    --instances=testvm2 --zone=$ZONE2
+    --instances=testvm2 --zone=$ZONE2 --quiet || true
 
 gcloud compute instances delete testvm1 --zone=$ZONE1 --quiet || true
 gcloud compute instances delete testvm2 --zone=$ZONE2 --quiet || true
@@ -38,6 +38,6 @@ gcloud compute instances create testvm2 \
     --project=$PROJECT_ID
 
 gcloud compute instance-groups unmanaged add-instances hw8-ig1 \
-    --instances=testvm1 --zone=$ZONE1
+    --instances=testvm1 --zone=$ZONE1 --quiet || true
 gcloud compute instance-groups unmanaged add-instances hw8-ig2 \
-    --instances=testvm2 --zone=$ZONE2
+    --instances=testvm2 --zone=$ZONE2 --quiet || true
