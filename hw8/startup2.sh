@@ -14,7 +14,6 @@ PROJECT_ID="bucsece528"
 cleanup() {
    echo "Exit Called. Cleaning up resources..."
    gcloud compute instances suspend testvm2 --zone=$ZONE2 --quiet
-   #gcloud sql instances patch $SQL_INSTANCE --activation-policy=NEVER --quiet --project=$PROJECT_ID
 }
 
 trap cleanup EXIT
