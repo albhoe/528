@@ -14,7 +14,7 @@ SQL_INSTANCE="hw6sql"
 
 cleanup() {
    echo "Exit Called. Cleaning up resources..."
-   gcloud compute instances suspend testvm1 --zone=$ZONE1 --quiet
+   #gcloud compute instances suspend testvm1 --zone=$ZONE1 --quiet
    #gcloud sql instances patch $SQL_INSTANCE --activation-policy=NEVER --quiet --project=$PROJECT_ID
 }
 

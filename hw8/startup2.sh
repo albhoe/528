@@ -13,7 +13,7 @@ PROJECT_ID="bucsece528"
 
 cleanup() {
    echo "Exit Called. Cleaning up resources..."
-   gcloud compute instances suspend testvm2 --zone=$ZONE2 --quiet
+   #gcloud compute instances suspend testvm2 --zone=$ZONE2 --quiet
 }
 
 trap cleanup EXIT
