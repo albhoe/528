@@ -10,17 +10,14 @@ SERVICE_ACCOUNT="ssl-test-serviceaccount@${PROJECT_ID}.iam.gserviceaccount.com"
 
 gcloud config set project $PROJECT_ID
 
+gcloud compute instance-groups unmanaged remove-instances hw8-ig1 \
+    --instances=testvm1 --zone=$ZONE1
+
+gcloud compute instance-groups unmanaged remove-instances hw8-ig2 \
+    --instances=testvm2 --zone=$ZONE2
+
 gcloud compute instances delete testvm1 --zone=$ZONE1 --quiet || true
 gcloud compute instances delete testvm2 --zone=$ZONE2 --quiet || true
-gcloud compute target-pools remove-instances cs528-pool \
-    --instances testvm1 \
-    --zone $ZONE1 \
-    || true
-gcloud compute target-pools remove-instances cs528-pool \
-    --instances testvm2 \
-    --zone $ZONE2 \
-    || true
-
 
 gcloud compute instances create testvm1 \
     --zone=$ZONE1 \
@@ -40,11 +37,7 @@ gcloud compute instances create testvm2 \
     --metadata-from-file=startup-script=startup1.sh \
     --project=$PROJECT_ID
 
-
-gcloud compute target-pools add-instances cs528-pool \
-    --instances testvm1 \
-    --instances-zone $ZONE1 \
-
-gcloud compute target-pools add-instances cs528-pool \
-    --instances testvm2 \
-    --instances-zone $ZONE2 \
+gcloud compute instance-groups unmanaged add-instances hw8-ig1 \
+    --instances=testvm1 --zone=$ZONE1
+gcloud compute instance-groups unmanaged add-instances hw8-ig2 \
+    --instances=testvm2 --zone=$ZONE2

@@ -4,10 +4,7 @@ import requests
 import time
 import random
 
-# Configuration
-LB_IP = "34.174.36.129"  # Replace with your Load Balancer Frontend IP
-PORT = "8080"
-URL = f"http://{LB_IP}:{PORT}"
+LOADBALANCER_URL = f"http://34.0.141.187:8080"
 
 # Sample data for testing
 FILES = ["index.html", "data.parquet", "missing_file.txt", "secret.pdf"]
@@ -17,7 +14,7 @@ GENDER = ['Male', 'Female', 'Other']
 INCOME = ['0-10k', '10k-20k', '20k-40k', '40k-60k', '60k-100k', '100k-150k', '150k-250k', '250k+']
 
 def start_client():
-    print(f"Starting client, targeting {URL}...")
+    print(f"Starting client, targeting {LOADBALANCER_URL}...")
     
     while True:
         # 1. Randomize request parameters
@@ -40,7 +37,7 @@ def start_client():
             # Note: methods like POST/DELETE might return 405 if not implemented
             response = requests.request(
                 method=method,
-                url=f"{URL}/{target_file}",
+                url=f"{LOADBALANCER_URL}/{target_file}",
                 headers=headers,
                 timeout=5
             )
