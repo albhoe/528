@@ -43,8 +43,8 @@ gcloud compute instances create testvm2 \
 
 gcloud compute target-pools add-instances cs528-pool \
     --instances testvm1 \
-    --zone $ZONE1 \
+    --instances-zone $ZONE1 \
 
 gcloud compute target-pools add-instances cs528-pool \
     --instances testvm2 \
-    --zone $ZONE2 \
+    --instances-zone $ZONE2 \

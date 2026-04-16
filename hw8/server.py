@@ -69,7 +69,7 @@ def handle_request():
             return response
     else:
         logging.warning(f"Request for unimplemented function: {request.method}")
-        response = make_response("Not Implemented", 501)
+        response = make_response(f"{request.method} Is not Implemented", 501)
         response.headers['Server Zone'] = zone
         return response
     
