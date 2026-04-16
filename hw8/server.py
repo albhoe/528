@@ -18,7 +18,12 @@ import logging
 import google.cloud.logging
 client = google.cloud.logging.Client()
 client.setup_logging()
-
+import requests
+# Get specific instance ID
+url = "http://google.internal"
+headers = {"Metadata-Flavor": "Google"}
+response = requests.get(url, headers=headers)
+print(response.text)
 
 app = Flask(__name__)
 
