@@ -23,11 +23,11 @@ python3 -m venv /opt/venv
 source /opt/venv/bin/activate
 
 # Install requirements inside the venv
-pip install -r /opt/528/ssl_test/requirements.txt
+pip install -r /opt/528/hw8/requirements.txt
 
 pip install requests
 
 export GCE_METADATA_MTLS_MODE=none
 
 # Run the script using the venv python
-nohup /opt/venv/bin/python3 /opt/528/ssl_test/output.py > /var/log/output.log 2>&1 &
+nohup /opt/venv/bin/python3 /opt/528/hw8/output.py > /var/log/output.log 2>&1 &
