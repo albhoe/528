@@ -34,4 +34,4 @@ pip install requests
 export GCE_METADATA_MTLS_MODE=none
 
 # Run the script using the venv python
-nohup /opt/venv/bin/python3 /opt/528/hw8/output.py > /var/log/output.log 2>&1 &
+nohup /opt/venv/bin/python3 /opt/528/hw8/server.py > /var/log/server.log 2>&1 &
