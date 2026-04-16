@@ -1,3 +1,4 @@
+from aiohttp import request
 from google.cloud import storage
 
 project_id="bucsece528"
@@ -27,8 +28,8 @@ try:
     response = requests.get(zone_url, headers=headers, timeout=5)
     response.raise_for_status()
     full_zone = response.text
-    print(full_zone)
-    print(full_zone.split('/')[-1])
+    zone = full_zone.split('/')[-1]
+    print(f"Zone = {zone}")
 except requests.exceptions.RequestException as e:
     print(f"Error: {e}")
 
@@ -52,18 +53,27 @@ def handle_request():
                 future.result(timeout=10)
             except Exception as e:
                 logging.error(f'Publish Error:{e}')
-            return 'Permission Denied', 400
+            response = make_response('Permission Denied', 400)
+            response.headers['Server Zone'] = zone
+            return response
 
         name = request.args.get('file')
         blob = bucket.blob(name)
         if blob.exists():
-            return blob.download_as_text(), 200
+            response = make_response(blob.download_as_text(), 200)
+            response.headers['Server Zone'] = zone
+            return response
         else:
             logging.warning(f"File not found:{name}")
-            return f"Not Found Error: {name} does not exist", 404
+            response = make_response(f"File not found: {name}", 404)
+            response.headers['Server Zone'] = zone
+            return response
     else:
         logging.warning(f"Request for unimplemented function: {request.method}")
-        return "Not Implemented", 501
+        response = make_response("Not Implemented", 501)
+        response.headers['Server Zone'] = zone
+        return response
+    
     
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080, threaded=True)
