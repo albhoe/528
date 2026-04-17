@@ -16,6 +16,8 @@ INCOME = ['0-10k', '10k-20k', '20k-40k', '40k-60k', '60k-100k', '100k-150k', '15
 def start_client():
     print(f"Starting client, targeting {LOADBALANCER_URL}...")
     
+    served_by_a = 0
+    served_by_b = 0
     while True:
         # 1. Randomize request parameters
         target_file = f"?file=files/{random.randint(-10, 20042)}.html"
@@ -47,9 +49,14 @@ def start_client():
             print("-------------------------------")
             # 4. Extract the zone header sent by your server
             server_zone = response.headers.get("Server-Zone")
-            
+            if server_zone == "us-south1-a":
+                served_by_a += 1
+            elif server_zone == "us-south1-b":
+                served_by_b += 1
+
+
             print(f"[{method}] File: {target_file:15} | Status: {response.status_code} | "
-                  f"Country: {country} | Zone: {server_zone}")
+                  f"Country: {country} | Zone: {server_zone} | Served by A: {served_by_a/(served_by_a+served_by_b)*100:.2f}% | Served by B: {served_by_b/(served_by_a+served_by_b)*100:.2f}%")
 
         except requests.exceptions.RequestException as e:
             print(f"Connection Error: {e}")
