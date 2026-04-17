@@ -41,9 +41,12 @@ def start_client():
                 headers=headers,
                 timeout=5
             )
-
+            print("--- RAW HEADERS FROM SERVER ---")
+            for key, value in response.headers.items():
+                print(f"{key}: {value}")
+            print("-------------------------------")
             # 4. Extract the zone header sent by your server
-            server_zone = response.headers.get("Server Zone")
+            server_zone = response.headers.get("Server-Zone")
             
             print(f"[{method}] File: {target_file:15} | Status: {response.status_code} | "
                   f"Country: {country} | Zone: {server_zone}")

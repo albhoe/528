@@ -53,24 +53,24 @@ def handle_request():
             except Exception as e:
                 logging.error(f'Publish Error:{e}')
             response = make_response('Permission Denied', 400)
-            response.headers['Server Zone'] = zone
+            response.headers['Server-Zone'] = zone
             return response
 
         name = request.args.get('file')
         blob = bucket.blob(name)
         if blob.exists():
             response = make_response(blob.download_as_text(), 200)
-            response.headers['Server Zone'] = zone
+            response.headers['Server-Zone'] = zone
             return response
         else:
             logging.warning(f"File not found:{name}")
             response = make_response(f"File not found: {name}", 404)
-            response.headers['Server Zone'] = zone
+            response.headers['Server-Zone'] = zone
             return response
     else:
         logging.warning(f"Request for unimplemented function: {request.method}")
         response = make_response(f"{request.method} Is not Implemented", 501)
-        response.headers['Server Zone'] = zone
+        response.headers['Server-Zone'] = zone
         return response
     
     
