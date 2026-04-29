@@ -9,9 +9,9 @@ SERVICE_ACCOUNT="ssl-test-serviceaccount@${PROJECT_ID}.iam.gserviceaccount.com"
 
 gcloud config set project $PROJECT_ID
 
-gcloud compute instances delete testvm1 --zone=$ZONE1 --quiet || true
+gcloud compute instances delete testvm2 --zone=$ZONE1 --quiet || true
 
-gcloud compute instances create testvm1 \
+gcloud compute instances create testvm2 \
     --zone=$ZONE1 \
     --machine-type=e2-small \
     --service-account=$SERVICE_ACCOUNT \
